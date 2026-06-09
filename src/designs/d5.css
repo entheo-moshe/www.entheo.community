@@ -1,0 +1,535 @@
+/* =============================================================================
+   DESIGN V — "Stillness"
+   Paper, ink, breath. The design is the negative space.
+   Shippori Mincho + Zen Kaku Gothic New.
+============================================================================= */
+
+.d5 {
+  --washi: #f7f4ec;
+  --ink: #211f1a;
+  --ink-60: rgba(33, 31, 26, 0.64);
+  --ink-30: rgba(33, 31, 26, 0.28);
+  --ink-12: rgba(33, 31, 26, 0.12);
+  --verm: #b5402c;
+
+  --pager-bg: rgba(247, 244, 236, 0.92);
+  --pager-ink: #211f1a;
+  --pager-line: rgba(33, 31, 26, 0.18);
+  --pager-hover: rgba(33, 31, 26, 0.06);
+  --pager-active-bg: #b5402c;
+  --pager-active-ink: #f7f4ec;
+
+  min-height: 100dvh;
+  background: var(--washi);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.9;
+  overflow-x: clip;
+}
+
+.d5 ::selection {
+  background: rgba(181, 64, 44, 0.18);
+}
+
+.d5-serif {
+  font-family: "Shippori Mincho", serif;
+}
+
+.d5-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.22;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.04'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- Nav ---------------------------------------------------------------------- */
+
+.d5-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(1.4rem, 3vw, 2.2rem) clamp(1.4rem, 4vw, 3rem);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+.d5-nav a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 300ms ease;
+}
+
+.d5-nav a:hover {
+  color: var(--verm);
+}
+
+.d5-nav .join::before {
+  content: "●";
+  color: var(--verm);
+  font-size: 0.5rem;
+  margin-right: 0.6em;
+  vertical-align: 1px;
+}
+
+/* --- Hero ----------------------------------------------------------------------- */
+
+.d5-hero {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.2rem 5rem;
+}
+
+.d5-enso {
+  position: relative;
+  width: min(420px, 86vw);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.d5-enso svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--ink);
+}
+
+.d5 .enso-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: d5-draw 2400ms cubic-bezier(0.6, 0, 0.3, 1) 400ms forwards;
+}
+
+.d5 .enso-ghost {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: d5-draw 2400ms cubic-bezier(0.6, 0, 0.3, 1) 520ms forwards;
+}
+
+@keyframes d5-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.d5-enso-core {
+  position: relative;
+  z-index: 1;
+  max-width: 76%;
+}
+
+.d5-hero-kicker {
+  margin: 0 0 1.2rem;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--verm);
+}
+
+.d5-hero-title {
+  margin: 0;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 5.4vw, 2.9rem);
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+}
+
+.d5-hero-line {
+  margin: 2.6rem auto 0;
+  max-width: 44ch;
+  color: var(--ink-60);
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
+}
+
+.d5-hero-link {
+  display: inline-block;
+  margin-top: 1.6rem;
+}
+
+/* quiet vermilion-ink link */
+.d5-link {
+  position: relative;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding-bottom: 5px;
+}
+
+.d5-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--ink-30);
+}
+
+.d5-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--verm);
+  z-index: 1;
+  transition: width 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.d5-link:hover::before {
+  width: 100%;
+}
+
+.d5-vertical {
+  position: absolute;
+  right: clamp(1.2rem, 4vw, 3rem);
+  top: 50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+  color: var(--ink-30);
+}
+
+@media (max-width: 720px) {
+  .d5-vertical { display: none; }
+}
+
+.d5-scrolldown {
+  position: absolute;
+  bottom: 2.2rem;
+  left: 50%;
+  width: 1px;
+  height: 56px;
+  background: var(--ink-30);
+  overflow: hidden;
+}
+
+.d5-scrolldown::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -14px;
+  width: 1px;
+  height: 14px;
+  background: var(--verm);
+  animation: d5-fall 3s ease-in-out infinite;
+}
+
+@keyframes d5-fall {
+  0% { transform: translateY(0); }
+  60%, 100% { transform: translateY(72px); }
+}
+
+/* --- Sections ---------------------------------------------------------------------- */
+
+.d5-section {
+  padding: clamp(5rem, 13vw, 9rem) clamp(1.4rem, 5vw, 3rem);
+  text-align: center;
+}
+
+.d5-vline {
+  width: 1px;
+  height: 86px;
+  margin: 0 auto;
+  background: var(--ink-30);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1300ms cubic-bezier(0.6, 0, 0.3, 1) 200ms;
+}
+
+.d5-vline.is-seen {
+  transform: scaleY(1);
+}
+
+.d5-kicker {
+  margin: 0 0 2rem;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--verm);
+}
+
+.d5-creed {
+  margin: 0 auto;
+  max-width: 34ch;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 500;
+  font-size: clamp(1.18rem, 2.6vw, 1.55rem);
+  line-height: 2.15;
+  letter-spacing: 0.05em;
+  text-wrap: balance;
+}
+
+.d5-creed .accent {
+  color: var(--verm);
+}
+
+.d5-footnote {
+  margin: 2.8rem 0 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+/* --- Three doors --------------------------------------------------------------------- */
+
+.d5-doors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(2.5rem, 7vw, 5rem);
+  max-width: 880px;
+  margin: clamp(3rem, 7vw, 5rem) auto 0;
+}
+
+@media (max-width: 720px) {
+  .d5-doors {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4rem;
+    max-width: 300px;
+  }
+}
+
+.d5-door .no {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.42em;
+  color: var(--verm);
+  margin-bottom: 1.6rem;
+}
+
+.d5-door .glyph {
+  height: 92px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+
+.d5 .glyph-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1600ms cubic-bezier(0.6, 0, 0.3, 1) var(--d, 200ms);
+}
+
+.d5 .is-seen .glyph-stroke {
+  stroke-dashoffset: 0;
+}
+
+.d5-door h3 {
+  margin: 0 0 0.8rem;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 600;
+  font-size: 1.32rem;
+  letter-spacing: 0.16em;
+}
+
+.d5-door p {
+  margin: 0 auto;
+  max-width: 24ch;
+  font-size: 0.84rem;
+  line-height: 2;
+  color: var(--ink-60);
+}
+
+/* --- Assembly --------------------------------------------------------------------------- */
+
+.d5-hanko {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 2.4rem;
+  transform: rotate(2.5deg);
+  color: #f3ede1;
+}
+
+.d5-when {
+  margin: 0;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.6vw, 2.2rem);
+  letter-spacing: 0.08em;
+}
+
+.d5-where {
+  margin: 1.4rem 0 2.6rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+/* --- Stones -------------------------------------------------------------------------------- */
+
+.d5-stones {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  max-width: 760px;
+  margin: clamp(3.4rem, 8vw, 5.5rem) auto 0;
+}
+
+.d5-stones::before {
+  content: "";
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  top: 11px;
+  height: 1px;
+  background: var(--ink-12);
+}
+
+.d5-stone {
+  position: relative;
+  width: 19%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.d5-stone .dot {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background: var(--washi);
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.d5-stone:nth-child(2) .dot { background: linear-gradient(var(--washi) 50%, var(--ink) 50%); }
+.d5-stone:nth-child(3) .dot { background: linear-gradient(var(--washi) 35%, var(--ink) 35%); }
+.d5-stone:nth-child(4) .dot { background: linear-gradient(var(--washi) 20%, var(--ink) 20%); }
+.d5-stone:nth-child(5) .dot { background: var(--ink); }
+
+.d5-stone:hover .dot {
+  transform: translateY(-6px);
+}
+
+.d5-stone .name {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+}
+
+.d5-stone .role {
+  margin-top: -0.7rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-60);
+  max-width: 16ch;
+}
+
+@media (max-width: 720px) {
+  .d5-stones {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2.2rem;
+    max-width: 280px;
+  }
+  .d5-stones::before {
+    left: 11px;
+    right: auto;
+    top: 2%;
+    bottom: 2%;
+    width: 1px;
+    height: auto;
+  }
+  .d5-stone {
+    width: 100%;
+    flex-direction: row;
+    text-align: left;
+    gap: 1.4rem;
+  }
+  .d5-stone .role { margin-top: 0; }
+}
+
+/* --- Finale / footer -------------------------------------------------------------------------- */
+
+.d5-finale-words {
+  margin: 0;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+}
+
+.d5-finale-words .accent {
+  color: var(--verm);
+}
+
+.d5-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem 2rem;
+  padding: 2rem clamp(1.4rem, 4vw, 3rem) calc(2rem + 56px);
+  border-top: 1px solid var(--ink-12);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+.d5-foot a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.d5-foot a:hover {
+  color: var(--verm);
+}
+
+/* --- Motion -------------------------------------------------------------------------------------- */
+
+.d5 [data-reveal] {
+  opacity: 0;
+  filter: blur(7px);
+  transition: opacity 1400ms ease var(--d, 0ms), filter 1400ms ease var(--d, 0ms);
+}
+
+.d5 [data-reveal].is-seen {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.d5-appear {
+  animation: d5-appear 1600ms ease both;
+}
+
+@keyframes d5-appear {
+  from { opacity: 0; filter: blur(7px); }
+  to { opacity: 1; filter: blur(0); }
+}

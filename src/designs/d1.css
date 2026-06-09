@@ -1,0 +1,693 @@
+/* =============================================================================
+   DESIGN I — "The Illuminated Herbarium"
+   A sacred field guide: parchment, engraved botanical plates, ink & gold leaf.
+   Cinzel (carved capitals) + EB Garamond (manuscript body).
+============================================================================= */
+
+.d1 {
+  --paper: #f3ead4;
+  --paper-hi: #f8f1e0;
+  --paper-lo: #e7d8b4;
+  --ink: #243627;
+  --ink-soft: #5c6a52;
+  --gold: #a8842c;
+  --gold-hi: #cda43a;
+  --oxblood: #7c372a;
+  --rule: rgba(168, 132, 44, 0.55);
+
+  --pager-bg: rgba(243, 234, 212, 0.88);
+  --pager-ink: #243627;
+  --pager-line: rgba(168, 132, 44, 0.45);
+  --pager-hover: rgba(168, 132, 44, 0.14);
+  --pager-active-bg: rgba(168, 132, 44, 0.22);
+
+  position: relative;
+  min-height: 100dvh;
+  background:
+    radial-gradient(130% 90% at 50% 0%, var(--paper-hi) 0%, var(--paper) 48%, var(--paper-lo) 100%),
+    var(--paper);
+  color: var(--ink);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.06rem;
+  line-height: 1.65;
+  overflow-x: clip;
+}
+
+/* mottled vellum blotches + grain */
+.d1::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(560px 380px at 12% 22%, rgba(168, 132, 44, 0.07), transparent 70%),
+    radial-gradient(640px 420px at 88% 64%, rgba(124, 55, 42, 0.05), transparent 70%),
+    radial-gradient(500px 360px at 60% 96%, rgba(36, 54, 39, 0.05), transparent 70%);
+}
+
+.d1-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- The gilded frame ------------------------------------------------------ */
+
+.d1-frame {
+  position: fixed;
+  inset: clamp(8px, 1.4vw, 18px);
+  z-index: 50;
+  pointer-events: none;
+  border: 1px solid var(--rule);
+}
+
+.d1-frame::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(168, 132, 44, 0.32);
+}
+
+.d1-corner {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  color: var(--gold);
+}
+
+.d1-corner.tl { top: -7px; left: -7px; }
+.d1-corner.tr { top: -7px; right: -7px; transform: scaleX(-1); }
+.d1-corner.bl { bottom: -7px; left: -7px; transform: scaleY(-1); }
+.d1-corner.br { bottom: -7px; right: -7px; transform: scale(-1); }
+
+/* --- Layout ----------------------------------------------------------------- */
+
+.d1-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1040px, calc(100% - clamp(3.5rem, 10vw, 7rem)));
+  margin-inline: auto;
+}
+
+/* --- Masthead --------------------------------------------------------------- */
+
+.d1-nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 1rem;
+  padding-top: clamp(1.8rem, 4vw, 2.6rem);
+  font-variant: small-caps;
+  letter-spacing: 0.22em;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.d1-nav .left { text-align: left; }
+.d1-nav .right { text-align: right; }
+
+.d1-brand {
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  font-variant: normal;
+  letter-spacing: 0.3em;
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+  color: var(--ink);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.d1-nav-rule {
+  margin-top: 0.9rem;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid rgba(168, 132, 44, 0.3);
+  height: 3px;
+}
+
+/* --- Hero / frontispiece ----------------------------------------------------- */
+
+.d1-hero {
+  position: relative;
+  text-align: center;
+  padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4rem);
+}
+
+.d1-kicker {
+  font-variant: small-caps;
+  letter-spacing: 0.34em;
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin: 1.4rem 0 1.1rem;
+}
+
+.d1-title {
+  margin: 0 auto;
+  font-family: "Cinzel", serif;
+  font-weight: 500;
+  font-size: clamp(2.7rem, 7.6vw, 5.9rem);
+  line-height: 1.04;
+  letter-spacing: 0.04em;
+  max-width: 14ch;
+}
+
+.d1-title .gilt {
+  background: linear-gradient(100deg, #8a6a1e 0%, var(--gold-hi) 28%, #e9cd7a 50%, var(--gold-hi) 72%, #8a6a1e 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: d1-shimmer 7s ease-in-out infinite;
+}
+
+@keyframes d1-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.d1-sub {
+  margin: 1.6rem auto 0;
+  max-width: 52ch;
+  font-style: italic;
+  font-size: clamp(1.12rem, 2vw, 1.32rem);
+  color: var(--ink-soft);
+}
+
+.d1-cta-row {
+  margin-top: 2.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.4rem, 4vw, 2.4rem);
+  flex-wrap: wrap;
+}
+
+/* wax seal button */
+.d1-seal {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  text-decoration: none;
+  color: #f6e7d2;
+  background:
+    radial-gradient(circle at 34% 30%, #a05543 0%, var(--oxblood) 42%, #5e2419 100%);
+  box-shadow:
+    inset 0 2px 6px rgba(255, 235, 210, 0.35),
+    inset 0 -4px 10px rgba(40, 10, 4, 0.55),
+    0 10px 22px rgba(60, 24, 12, 0.35);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.d1-seal:hover {
+  transform: translateY(2px) rotate(-2deg);
+  box-shadow:
+    inset 0 2px 5px rgba(255, 235, 210, 0.3),
+    inset 0 -3px 8px rgba(40, 10, 4, 0.55),
+    0 5px 12px rgba(60, 24, 12, 0.4);
+}
+
+.d1-seal svg {
+  position: absolute;
+  inset: 0;
+}
+
+.d1-seal-text {
+  font-family: "Cinzel", serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.d1-quiet-link {
+  font-style: italic;
+  font-size: 1.08rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 2px;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.d1-quiet-link:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* flanking botanicals */
+.d1-flora {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(110px, 13vw, 170px);
+  color: var(--ink);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.d1-flora.left { left: calc(-1 * clamp(1rem, 6vw, 5rem)); }
+.d1-flora.right { right: calc(-1 * clamp(1rem, 6vw, 5rem)); }
+
+@media (max-width: 1080px) {
+  .d1-flora { display: none; }
+}
+
+/* gold motes drifting in hero */
+.d1-mote {
+  position: absolute;
+  bottom: 18%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e3c269, rgba(227, 194, 105, 0));
+  animation: d1-mote 11s linear infinite;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes d1-mote {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  12% { opacity: 0.85; }
+  85% { opacity: 0.25; }
+  100% { transform: translateY(-46vh) translateX(2.2rem); opacity: 0; }
+}
+
+/* --- Ornamental divider ------------------------------------------------------ */
+
+.d1-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: clamp(2.2rem, 5vw, 3.5rem) auto;
+  color: var(--gold);
+}
+
+.d1-divider .line {
+  width: min(180px, 24vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule));
+}
+
+.d1-divider .line.flip {
+  background: linear-gradient(270deg, transparent, var(--rule));
+}
+
+/* --- Section headers ---------------------------------------------------------- */
+
+.d1-section {
+  padding: clamp(1.6rem, 4vw, 3rem) 0;
+}
+
+.d1-sec-head {
+  text-align: center;
+  margin-bottom: clamp(1.8rem, 4vw, 2.8rem);
+}
+
+.d1-sec-kicker {
+  font-variant: small-caps;
+  letter-spacing: 0.3em;
+  font-size: 0.8rem;
+  color: var(--gold);
+  margin: 0 0 0.7rem;
+}
+
+.d1-sec-title {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-weight: 500;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  letter-spacing: 0.05em;
+}
+
+/* --- Creed (drop cap, marginalia) --------------------------------------------- */
+
+.d1-creed {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 62ch;
+  margin-inline: auto;
+}
+
+.d1-creed-text {
+  font-size: clamp(1.1rem, 1.9vw, 1.24rem);
+  line-height: 1.78;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+.d1-creed-text::first-letter {
+  font-family: "Cinzel", serif;
+  font-size: 4.6em;
+  line-height: 0.78;
+  float: left;
+  padding: 0.08em 0.14em 0 0;
+  color: var(--oxblood);
+}
+
+.d1-marginalia {
+  position: absolute;
+  left: -11.5rem;
+  top: 0.4rem;
+  width: 9rem;
+  text-align: right;
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--gold);
+}
+
+.d1-marginalia em {
+  display: block;
+  font-variant: normal;
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1180px) {
+  .d1-marginalia {
+    position: static;
+    width: auto;
+    text-align: center;
+    margin-bottom: 1.6rem;
+  }
+}
+
+/* --- Herbarium plates ----------------------------------------------------------- */
+
+.d1-plates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.2rem, 2.6vw, 2rem);
+}
+
+@media (max-width: 860px) {
+  .d1-plates { grid-template-columns: minmax(0, 1fr); max-width: 460px; margin-inline: auto; }
+}
+
+.d1-plate {
+  position: relative;
+  background: linear-gradient(170deg, var(--paper-hi), #f2e8cf);
+  border: 1px solid rgba(36, 54, 39, 0.45);
+  padding: 1.9rem 1.4rem 1.5rem;
+  text-align: center;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 320ms ease;
+}
+
+.d1-plate::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(168, 132, 44, 0.5);
+  pointer-events: none;
+  transition: border-color 300ms ease;
+}
+
+.d1-plate:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 40px rgba(60, 50, 20, 0.16);
+}
+
+.d1-plate:hover::before {
+  border-color: var(--gold-hi);
+}
+
+.d1-plate-no {
+  font-variant: small-caps;
+  letter-spacing: 0.3em;
+  font-size: 0.78rem;
+  color: var(--oxblood);
+  margin: 0;
+}
+
+.d1-plate-art {
+  height: 200px;
+  display: grid;
+  place-items: center;
+  margin: 0.9rem auto 0.6rem;
+  color: var(--ink);
+}
+
+.d1-plate-title {
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  font-size: 1.06rem;
+  letter-spacing: 0.12em;
+  margin: 0.2rem 0 0.1rem;
+}
+
+.d1-plate-latin {
+  font-style: italic;
+  color: var(--gold);
+  font-size: 0.95rem;
+  margin: 0 0 0.8rem;
+}
+
+.d1-plate-desc {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* engraved stroke-drawing */
+.d1 .draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1600ms cubic-bezier(0.5, 0, 0.2, 1) var(--d, 0ms);
+}
+
+.d1 .is-seen .draw,
+.d1 .draw.now {
+  stroke-dashoffset: 0;
+}
+
+/* hero flora draws itself on arrival */
+.d1-flora .draw {
+  animation: d1-draw 1900ms cubic-bezier(0.5, 0, 0.2, 1) forwards;
+  animation-delay: calc(var(--d, 0ms) + 500ms);
+}
+
+@keyframes d1-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.d1 .fade-art {
+  opacity: 0;
+  transition: opacity 900ms ease var(--d, 0ms);
+}
+
+.d1 .is-seen .fade-art,
+.d1 .fade-art.now {
+  opacity: 1;
+}
+
+/* --- Assembly invitation ----------------------------------------------------------- */
+
+.d1-invite {
+  max-width: 700px;
+  margin-inline: auto;
+  text-align: center;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
+  position: relative;
+}
+
+.d1-invite::before,
+.d1-invite::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(168, 132, 44, 0.3);
+}
+
+.d1-invite::before { top: 4px; }
+.d1-invite::after { bottom: 4px; }
+
+.d1-invite-when {
+  font-family: "Cinzel", serif;
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  letter-spacing: 0.08em;
+  margin: 1rem 0 0.4rem;
+}
+
+.d1-invite-sub {
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0.6rem auto 1.4rem;
+}
+
+.d1-invite-note {
+  font-variant: small-caps;
+  letter-spacing: 0.24em;
+  font-size: 0.78rem;
+  color: var(--gold);
+}
+
+/* --- The Path (ministry steps) ------------------------------------------------------ */
+
+.d1-path {
+  position: relative;
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.d1-path::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, var(--rule) 7%, var(--rule) 93%, transparent);
+}
+
+.d1-step {
+  position: relative;
+}
+
+.d1-step::after {
+  content: "";
+  position: absolute;
+  top: 0.85rem;
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg);
+  background: var(--paper-hi);
+  border: 1.5px solid var(--gold);
+}
+
+.d1-step:nth-child(odd)::after { right: -61px; }
+.d1-step:nth-child(even)::after { left: -61px; }
+
+.d1-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.6rem, 4vw, 2.4rem);
+}
+
+.d1-step {
+  width: calc(50% - 56px);
+  text-align: right;
+}
+
+.d1-step:nth-child(even) {
+  align-self: flex-end;
+  text-align: left;
+}
+
+.d1-step-no {
+  font-family: "Cinzel", serif;
+  color: var(--oxblood);
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.d1-step-title {
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.3rem;
+}
+
+.d1-step-desc {
+  margin: 0;
+  font-size: 0.99rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+@media (max-width: 720px) {
+  .d1-path::before { display: none; }
+  .d1-step::after { display: none; }
+  .d1-step,
+  .d1-step:nth-child(even) {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* --- Finale & colophon ------------------------------------------------------------- */
+
+.d1-finale {
+  text-align: center;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(2rem, 5vw, 3.5rem);
+}
+
+.d1-finale-words {
+  font-style: italic;
+  font-size: clamp(2rem, 5.4vw, 3.6rem);
+  line-height: 1.2;
+  margin: 0 0 2.2rem;
+}
+
+.d1-finale-words .gilt-word {
+  color: var(--gold);
+}
+
+.d1-colophon {
+  text-align: center;
+  padding: 1.6rem 0 calc(2.2rem + 56px);
+  border-top: 1px solid var(--rule);
+  font-variant: small-caps;
+  letter-spacing: 0.22em;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 2.1;
+}
+
+.d1-colophon a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.d1-colophon a:hover {
+  text-decoration: underline;
+}
+
+/* --- Reveal & load motion ------------------------------------------------------------ */
+
+.d1 [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms);
+}
+
+.d1 [data-reveal].is-seen {
+  opacity: 1;
+  transform: none;
+}
+
+.d1-up {
+  animation: d1-up 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes d1-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
