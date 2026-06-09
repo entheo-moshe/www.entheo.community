@@ -259,7 +259,7 @@ function Road() {
             <circle cx={m.x} cy={m.y} r="4" fill={i % 2 ? '#8e3b66' : '#e2702a'} />
             <text
               x={m.x + (i === 0 ? 18 : 0)}
-              y={m.y + (i % 2 === 0 ? 42 : -34)}
+              y={m.y + (i % 2 === 0 ? 44 : -50)}
               textAnchor={i === 0 ? 'start' : 'middle'}
               fontFamily="'Karla', sans-serif"
               fontWeight="800"
@@ -271,7 +271,7 @@ function Road() {
             </text>
             <text
               x={m.x + (i === 0 ? 18 : 0)}
-              y={m.y + (i % 2 === 0 ? 60 : -16)}
+              y={m.y + (i % 2 === 0 ? 62 : -32)}
               textAnchor={i === 0 ? 'start' : 'middle'}
               fontFamily="'Karla', sans-serif"
               fontWeight="600"

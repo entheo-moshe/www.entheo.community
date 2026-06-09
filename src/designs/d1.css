@@ -129,6 +129,16 @@
   height: 3px;
 }
 
+@media (max-width: 680px) {
+  .d1-nav {
+    grid-template-columns: 1fr;
+  }
+  .d1-nav .left,
+  .d1-nav .right {
+    display: none;
+  }
+}
+
 /* --- Hero / frontispiece ----------------------------------------------------- */
 
 .d1-hero {
@@ -438,6 +448,12 @@
   place-items: center;
   margin: 0.9rem auto 0.6rem;
   color: var(--ink);
+}
+
+.d1-plate-art svg {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
 }
 
 .d1-plate-title {

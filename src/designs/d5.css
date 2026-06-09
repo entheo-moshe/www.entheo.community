@@ -144,6 +144,13 @@
   color: var(--verm);
 }
 
+@media (max-width: 520px) {
+  .d5-hero-kicker {
+    font-size: 0.54rem;
+    letter-spacing: 0.3em;
+  }
+}
+
 .d5-hero-title {
   margin: 0;
   font-family: "Shippori Mincho", serif;
