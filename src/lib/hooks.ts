@@ -19,10 +19,19 @@ export function useReveal() {
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
     if (els.length === 0) return
-    if (!('IntersectionObserver' in window)) {
-      els.forEach((el) => el.classList.add('is-seen'))
+
+    const revealAll = () => els.forEach((el) => el.classList.add('is-seen'))
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      revealAll()
       return
     }
+
+    if (!('IntersectionObserver' in window)) {
+      revealAll()
+      return
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -35,14 +44,14 @@ export function useReveal() {
       { rootMargin: '0px 0px -8% 0px', threshold: 0.1 },
     )
     els.forEach((el) => io.observe(el))
-    return () => io.disconnect()
-  }, [])
-}
 
-/** True when the user prefers reduced motion. Read once; fine for canvases. */
-export function prefersReducedMotion() {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
+    // Critical content must never remain hidden when a browser restores a deep
+    // scroll position, a screenshot tool does not scroll, or observers stall.
+    const fallback = window.setTimeout(revealAll, 4_000)
+
+    return () => {
+      io.disconnect()
+      window.clearTimeout(fallback)
+    }
+  }, [])
 }

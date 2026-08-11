@@ -1,3 +1,13 @@
 {
-  "target": "react"
+  "target": "react",
+  "virtualRouteConfig": {
+    "type": "root",
+    "file": "__root.tsx",
+    "children": [
+      {
+        "type": "index",
+        "file": "1.tsx"
+      }
+    ]
+  }
 }

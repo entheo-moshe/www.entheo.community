@@ -1,12 +1,13 @@
 import type { CSSProperties, SVGProps } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { Pager } from '../components/Pager'
 import { useReveal, useTitle } from '../lib/hooks'
 import '../designs/d1.css'
 
-export const Route = createFileRoute('/1')({ component: DesignOne })
+export const Route = createFileRoute('/')({ component: LandingPage })
 
 const vars = (v: Record<string, string>) => v as CSSProperties
+const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'
+const ASSEMBLY_URL = 'https://www.entheo.community/events/weekly-assembly'
 
 /* ---------------------------------------------------------------- engraving
    All illustrations are generated line work — an herbarium etched in code. */
@@ -243,18 +244,27 @@ function SunGlyph() {
   )
 }
 
-function WaxSeal({ label }: { label: string }) {
+function WaxSeal({
+  label,
+  href,
+  arcId,
+}: {
+  label: string
+  href: string
+  arcId: string
+}) {
   return (
     <a
       className="d1-seal"
-      href="https://www.entheo.community/"
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
+      aria-label={`${label.toLowerCase()} Entheo Community (opens in a new tab)`}
     >
       <svg viewBox="0 0 108 108" aria-hidden>
         <defs>
           <path
-            id="d1-seal-arc"
+            id={arcId}
             d="M 54 54 m -36 0 a 36 36 0 1 1 72 0 a 36 36 0 1 1 -72 0"
           />
         </defs>
@@ -268,12 +278,12 @@ function WaxSeal({ label }: { label: string }) {
           strokeDasharray="2 3"
         />
         <text fill="rgba(246,231,210,0.85)" fontSize="8.4" letterSpacing="2.6">
-          <textPath href="#d1-seal-arc" startOffset="0">
+          <textPath href={`#${arcId}`} startOffset="0">
             ENTHEO COMMUNITY · EST MMXXIII ·
           </textPath>
         </text>
       </svg>
-      <span className="d1-seal-text">
+      <span className="d1-seal-text" aria-hidden>
         {label}
         <br />✦
       </span>
@@ -315,12 +325,15 @@ const STEPS = [
   ['V', 'Minister of Ceremony', 'Train, under guidance & evaluation, to hold space and lead the rite itself.'],
 ] as const
 
-function DesignOne() {
-  useTitle('Entheo Community — The Illuminated Herbarium')
+function LandingPage() {
+  useTitle('Entheo Community — Welcome Home')
   useReveal()
 
   return (
-    <div className="d1">
+    <div className="d1" id="top">
+      <a className="d1-skip" href="#hero-title">
+        Skip to content
+      </a>
       <div className="d1-grain" aria-hidden />
       <div className="d1-frame" aria-hidden>
         <FrameCorner pos="tl" />
@@ -330,190 +343,235 @@ function DesignOne() {
       </div>
 
       <div className="d1-shell">
-        <header className="d1-nav d1-up">
-          <span className="left">Est. MMXXIII</span>
-          <span className="d1-brand">ENTHEO&nbsp;COMMUNITY</span>
-          <span className="right">Welcome Home</span>
-        </header>
-        <div className="d1-nav-rule d1-up" />
-
-        {/* ------------------------------------------------ frontispiece */}
-        <section className="d1-hero">
-          <div className="d1-flora left" aria-hidden>
-            <Fern />
-          </div>
-          <div className="d1-flora right" aria-hidden>
-            <Fern flip />
-          </div>
-
-          {[12, 28, 46, 62, 78, 90].map((left, i) => (
-            <span
-              key={i}
-              className="d1-mote"
-              style={{
-                left: `${left}%`,
-                animationDelay: `${i * 1.7}s`,
-                animationDuration: `${9 + (i % 3) * 2.5}s`,
-              }}
-              aria-hidden
-            />
-          ))}
-
-          <div className="d1-up" style={{ animationDelay: '120ms', color: 'var(--gold)' }}>
-            <Fleuron />
-          </div>
-          <p className="d1-kicker d1-up" style={{ animationDelay: '220ms' }}>
-            A Nationwide Fellowship of Entheists
-          </p>
-          <h1 className="d1-title d1-up" style={{ animationDelay: '320ms' }}>
-            The God <span className="gilt">Within</span>
-          </h1>
-          <p className="d1-sub d1-up" style={{ animationDelay: '460ms' }}>
-            Entheo Community is a fellowship of seekers for whom sacred plants and wild
-            places are not an escape from life — but the way home to it.
-          </p>
-          <div className="d1-cta-row d1-up" style={{ animationDelay: '600ms' }}>
-            <WaxSeal label="JOIN US" />
-            <a className="d1-quiet-link" href="#assembly">
-              Visit the Weekly Assembly&nbsp;❧
+        <header className="d1-site-header">
+          <div className="d1-nav d1-up">
+            <span className="left">Est. MMXXIII</span>
+            <a className="d1-brand" href="#top" aria-label="Entheo Community home">
+              ENTHEO&nbsp;COMMUNITY
             </a>
+            <span className="right">Welcome Home</span>
           </div>
-        </section>
-
-        <div className="d1-divider" data-reveal>
-          <span className="line" />
-          <Fleuron />
-          <span className="line flip" />
-        </div>
-
-        {/* ------------------------------------------------------- creed */}
-        <section className="d1-section">
-          <div className="d1-creed" data-reveal>
-            <aside className="d1-marginalia">
-              Entheos · ἔνθεος
-              <em>“the god within” — the root of enthusiasm</em>
-            </aside>
-            <p className="d1-creed-text">
-              We are Entheists: we hold that the divine is not housed in distant heavens
-              but seeded in every living thing, waiting patiently beneath the noise of our
-              days. To walk slowly into a forest, to take the sacrament with reverence, to
-              sit in honest stillness — these are three ways of knocking on a door that
-              opens from the inside. Founded in 2023, our fellowship now reaches across
-              the country. Whatever tradition carried you here, there is a place set for
-              you at this table.
-            </p>
+          <div className="d1-nav-rule d1-up" />
+        </header>
+        <nav className="d1-chapter-nav d1-up" aria-label="Primary">
+          <div className="d1-index-links">
+            <a href="#belief">Belief</a>
+            <a href="#sacraments">Practice</a>
+            <a href="#assembly">Gather</a>
+            <a href="#path">The path</a>
           </div>
-        </section>
+          <a
+            className="d1-nav-join"
+            href={MEMBERSHIP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join Entheo Community (opens in a new tab)"
+          >
+            Join us <span aria-hidden>↗</span>
+          </a>
+        </nav>
 
-        {/* ------------------------------------------------------ plates */}
-        <section className="d1-section" id="sacraments">
-          <header className="d1-sec-head" data-reveal>
-            <p className="d1-sec-kicker">The Three Sacraments</p>
-            <h2 className="d1-sec-title">A Field Guide to Communion</h2>
-          </header>
-          <div className="d1-plates">
-            {PLATES.map((p, i) => (
-              <article
-                key={p.no}
-                className="d1-plate"
-                data-reveal
-                style={vars({ '--d': `${i * 140}ms` })}
-              >
-                <p className="d1-plate-no">{p.no}</p>
-                <div className="d1-plate-art">{p.art}</div>
-                <h3 className="d1-plate-title">{p.title}</h3>
-                <p className="d1-plate-latin">{p.latin}</p>
-                <p className="d1-plate-desc">{p.desc}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <div className="d1-divider" data-reveal>
-          <span className="line" />
-          <Fleuron />
-          <span className="line flip" />
-        </div>
-
-        {/* ---------------------------------------------------- assembly */}
-        <section className="d1-section" id="assembly">
-          <div className="d1-invite" data-reveal>
-            <div style={{ color: 'var(--gold)' }}>
-              <SunGlyph />
+        <main>
+          {/* ------------------------------------------------ frontispiece */}
+          <section className="d1-hero" aria-labelledby="hero-title">
+            <div className="d1-flora left" aria-hidden>
+              <Fern />
             </div>
-            <p className="d1-sec-kicker" style={{ marginTop: '1rem' }}>
-              You are invited
+            <div className="d1-flora right" aria-hidden>
+              <Fern flip />
+            </div>
+
+            {[12, 28, 46, 62, 78, 90].map((left, i) => (
+              <span
+                key={i}
+                className="d1-mote"
+                style={{
+                  left: `${left}%`,
+                  animationDelay: `${i * 1.7}s`,
+                  animationDuration: `${9 + (i % 3) * 2.5}s`,
+                }}
+                aria-hidden
+              />
+            ))}
+
+            <div className="d1-up" style={{ animationDelay: '120ms', color: 'var(--gold)' }}>
+              <Fleuron />
+            </div>
+            <p className="d1-kicker d1-up" style={{ animationDelay: '220ms' }}>
+              A Nationwide Fellowship of Entheists
             </p>
-            <p className="d1-invite-when">Every Wednesday · Half Past Ten, Eastern</p>
-            <p className="d1-invite-sub">
-              The Weekly Assembly — an open circle for fellowship, shared experience &
-              honest inquiry. Newcomers are always welcome; come simply to listen, if you
-              like.
+            <h1
+              className="d1-title d1-up"
+              id="hero-title"
+              tabIndex={-1}
+              style={{ animationDelay: '320ms' }}
+            >
+              The God <span className="gilt">Within</span>
+            </h1>
+            <p className="d1-sub d1-up" style={{ animationDelay: '460ms' }}>
+              Entheo Community is a fellowship of seekers for whom sacred plants and wild
+              places are not an escape from life — but the way home to it.
             </p>
-            <p className="d1-invite-note">Held online · wherever you are</p>
-            <p style={{ marginTop: '1.4rem' }}>
-              <a
-                className="d1-quiet-link"
-                href="https://www.entheo.community/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Reserve your seat →
+            <div className="d1-cta-row d1-up" style={{ animationDelay: '600ms' }}>
+              <WaxSeal label="JOIN US" href={MEMBERSHIP_URL} arcId="hero-seal-arc" />
+              <a className="d1-quiet-link" href="#assembly">
+                Attend the Weekly Assembly&nbsp;❧
               </a>
-            </p>
-          </div>
-        </section>
+            </div>
+          </section>
 
-        {/* -------------------------------------------------------- path */}
-        <section className="d1-section" id="path">
-          <header className="d1-sec-head" data-reveal>
-            <p className="d1-sec-kicker">From Guest to Minister</p>
-            <h2 className="d1-sec-title">The Path of Ministry</h2>
-          </header>
-          <div className="d1-path">
-            <ol className="d1-steps">
-              {STEPS.map(([no, title, desc], i) => (
-                <li
-                  key={no}
-                  className="d1-step"
-                  data-reveal
-                  style={vars({ '--d': `${i * 90}ms` })}
-                >
-                  <span className="d1-step-no">{no}.</span>
-                  <h3 className="d1-step-title">{title}</h3>
-                  <p className="d1-step-desc">{desc}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        {/* ------------------------------------------------------ finale */}
-        <section className="d1-finale" data-reveal>
-          <div style={{ color: 'var(--gold)', display: 'flex', justifyContent: 'center' }}>
+          <div className="d1-divider" data-reveal>
+            <span className="line" />
             <Fleuron />
+            <span className="line flip" />
           </div>
-          <p className="d1-finale-words">
-            However far you have wandered,
-            <br />
-            <span className="gilt-word">welcome home.</span>
-          </p>
-          <div className="d1-cta-row">
-            <WaxSeal label="BEGIN" />
+
+          {/* ------------------------------------------------------- creed */}
+          <section className="d1-section" id="belief" aria-labelledby="belief-title">
+            <h2 className="d1-sr-only" id="belief-title">
+              What we believe
+            </h2>
+            <div className="d1-creed" data-reveal>
+              <aside className="d1-marginalia">
+                Entheos · ἔνθεος
+                <em>“the god within” — the root of enthusiasm</em>
+              </aside>
+              <p className="d1-creed-text">
+                We are Entheists: we hold that the divine is not housed in distant heavens
+                but seeded in every living thing, waiting patiently beneath the noise of our
+                days. To walk slowly into a forest, to take the sacrament with reverence, to
+                sit in honest stillness — these are three ways of knocking on a door that
+                opens from the inside. Founded in 2023, our fellowship now reaches across
+                the country. Whatever tradition carried you here, there is a place set for
+                you at this table.
+              </p>
+            </div>
+          </section>
+
+          {/* ------------------------------------------------------ plates */}
+          <section className="d1-section" id="sacraments" aria-labelledby="sacraments-title">
+            <header className="d1-sec-head" data-reveal>
+              <p className="d1-sec-kicker">The Three Sacraments</p>
+              <h2 className="d1-sec-title" id="sacraments-title">
+                A Field Guide to Communion
+              </h2>
+            </header>
+            <div className="d1-plates">
+              {PLATES.map((p, i) => (
+                <article
+                  key={p.no}
+                  className="d1-plate"
+                  data-reveal
+                  style={vars({ '--d': `${i * 140}ms` })}
+                >
+                  <p className="d1-plate-no">{p.no}</p>
+                  <div className="d1-plate-art">{p.art}</div>
+                  <h3 className="d1-plate-title">{p.title}</h3>
+                  <p className="d1-plate-latin">{p.latin}</p>
+                  <p className="d1-plate-desc">{p.desc}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div className="d1-divider" data-reveal>
+            <span className="line" />
+            <Fleuron />
+            <span className="line flip" />
           </div>
-        </section>
+
+          {/* ---------------------------------------------------- assembly */}
+          <section className="d1-section" id="assembly" aria-labelledby="assembly-title">
+            <div className="d1-invite" data-reveal>
+              <div style={{ color: 'var(--gold)' }}>
+                <SunGlyph />
+              </div>
+              <p className="d1-sec-kicker" style={{ marginTop: '1rem' }}>
+                You are invited
+              </p>
+              <h2 className="d1-invite-title" id="assembly-title">
+                The Weekly Assembly
+              </h2>
+              <p className="d1-invite-when">Every Wednesday · Half Past Ten, Eastern</p>
+              <p className="d1-invite-sub">
+                An open circle for fellowship, shared experience & honest inquiry.
+                Newcomers are always welcome; come simply to listen, if you like.
+              </p>
+              <ul className="d1-invite-details" aria-label="Assembly details">
+                <li>
+                  <span>Where</span>Online
+                </li>
+                <li>
+                  <span>For whom</span>Newcomers welcome
+                </li>
+                <li>
+                  <span>How to arrive</span>Come as you are
+                </li>
+              </ul>
+              <p className="d1-invite-action">
+                <a
+                  className="d1-quiet-link"
+                  href={ASSEMBLY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Reserve your seat at the Weekly Assembly (opens in a new tab)"
+                >
+                  Reserve your seat <span aria-hidden>→</span>
+                </a>
+              </p>
+            </div>
+          </section>
+
+          {/* -------------------------------------------------------- path */}
+          <section className="d1-section" id="path" aria-labelledby="path-title">
+            <header className="d1-sec-head" data-reveal>
+              <p className="d1-sec-kicker">From Guest to Minister</p>
+              <h2 className="d1-sec-title" id="path-title">
+                The Path of Ministry
+              </h2>
+            </header>
+            <div className="d1-path">
+              <ol className="d1-steps">
+                {STEPS.map(([no, title, desc], i) => (
+                  <li
+                    key={no}
+                    className="d1-step"
+                    data-reveal
+                    style={vars({ '--d': `${i * 90}ms` })}
+                  >
+                    <span className="d1-step-no">{no}.</span>
+                    <h3 className="d1-step-title">{title}</h3>
+                    <p className="d1-step-desc">{desc}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+
+          {/* ------------------------------------------------------ finale */}
+          <section className="d1-finale" data-reveal aria-labelledby="finale-title">
+            <div style={{ color: 'var(--gold)', display: 'flex', justifyContent: 'center' }}>
+              <Fleuron />
+            </div>
+            <h2 className="d1-finale-words" id="finale-title">
+              However far you have wandered,
+              <br />
+              <span className="gilt-word">welcome home.</span>
+            </h2>
+            <div className="d1-cta-row">
+              <WaxSeal label="BEGIN" href={MEMBERSHIP_URL} arcId="finale-seal-arc" />
+            </div>
+          </section>
+        </main>
 
         <footer className="d1-colophon">
           Entheo Community · An Unincorporated Religious Fellowship · Est. 2023
           <br />
-          Set in Cinzel &amp; EB Garamond · Illustrations engraved in code ·{' '}
-          <a href="https://www.entheo.community/" target="_blank" rel="noopener noreferrer">
-            entheo.community
+          <a href="mailto:info@entheo.community">
+            info@entheo.community
           </a>
         </footer>
       </div>
-
-      <Pager current={1} />
     </div>
   )
 }

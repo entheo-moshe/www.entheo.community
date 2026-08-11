@@ -1,9 +1,6 @@
 @import "tailwindcss";
 
-/* ---------------------------------------------------------------------------
-   Global base. Every design at /1–/5 is fully self-contained and paints its
-   own world on top of this neutral ground.
---------------------------------------------------------------------------- */
+/* Global base for the Entheo Community landing page. */
 
 * {
   box-sizing: border-box;
@@ -20,9 +17,9 @@ body {
 
 body {
   margin: 0;
-  background: #0c0e14;
-  color: #e8e6df;
-  font-family: "Mulish", ui-sans-serif, system-ui, sans-serif;
+  background: #f3ead4;
+  color: #243627;
+  font-family: "EB Garamond", Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -44,59 +41,6 @@ button {
   background: none;
   border: 0;
   cursor: pointer;
-}
-
-/* ----- Exploration pager (skinned per design via CSS custom properties) --- */
-
-.pager {
-  position: fixed;
-  bottom: 1.1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 90;
-  display: flex;
-  align-items: center;
-  gap: 0.15rem;
-  padding: 0.3rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid var(--pager-line, rgba(255, 255, 255, 0.16));
-  background: var(--pager-bg, rgba(10, 12, 18, 0.72));
-  color: var(--pager-ink, rgba(255, 255, 255, 0.78));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  font-family: "Spline Sans Mono", monospace;
-  font-size: 0.66rem;
-  letter-spacing: 0.08em;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-}
-
-.pager a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.9rem;
-  height: 1.9rem;
-  padding: 0 0.5rem;
-  border-radius: 999px;
-  text-decoration: none;
-  color: inherit;
-  opacity: 0.62;
-  transition: opacity 160ms ease, background-color 160ms ease, color 160ms ease;
-}
-
-.pager a:hover {
-  opacity: 1;
-  background: var(--pager-hover, rgba(255, 255, 255, 0.1));
-}
-
-.pager a[aria-current="page"] {
-  opacity: 1;
-  background: var(--pager-active-bg, rgba(255, 255, 255, 0.14));
-  color: var(--pager-active-ink, inherit);
-}
-
-.pager .pager-home {
-  font-size: 0.78rem;
 }
 
 /* ----- Motion safety ------------------------------------------------------ */
