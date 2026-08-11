@@ -2,7 +2,10 @@ export const PRODUCTION_ORIGIN = 'https://www.entheo.community'
 export const LOCAL_AUTH_ORIGIN = 'http://localhost:8888'
 export const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'
 export const DASHBOARD_PATH = '/members/dashboard'
+export const RESOURCES_PATH = '/members/resources'
 export const ERROR_PATH = '/members/error'
+
+export type MemberReturnPath = typeof DASHBOARD_PATH | typeof RESOURCES_PATH
 
 export const AIRTABLE_BASE_ID = 'appbVGvgHR52W0qp5'
 export const AIRTABLE_MEMBERS_TABLE_ID = 'tblKagCu0hrIBhvUd'
@@ -64,8 +67,10 @@ export function getSessionSecret(request: Request, googleClientSecret?: string) 
   return configured
 }
 
-export function allowReturnTo(value: string | null): typeof DASHBOARD_PATH {
-  return value === DASHBOARD_PATH ? value : DASHBOARD_PATH
+export function allowReturnTo(value: string | null): MemberReturnPath {
+  return value === DASHBOARD_PATH || value === RESOURCES_PATH
+    ? value
+    : DASHBOARD_PATH
 }
 
 export function getCanonicalAuthRedirect(request: Request) {

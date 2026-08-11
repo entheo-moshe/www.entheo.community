@@ -1,5 +1,10 @@
 import { hkdfSync, timingSafeEqual } from 'node:crypto'
 import { EncryptJWT, jwtDecrypt } from 'jose'
+import {
+  DASHBOARD_PATH,
+  RESOURCES_PATH,
+  type MemberReturnPath,
+} from './config'
 
 const TOKEN_ISSUER = 'https://www.entheo.community'
 const FLOW_AUDIENCE = 'entheo-oauth-flow'
@@ -13,7 +18,7 @@ export interface OAuthFlowClaims {
   state: string
   nonce: string
   codeVerifier: string
-  returnTo: '/members/dashboard'
+  returnTo: MemberReturnPath
 }
 
 export interface MemberSessionClaims {
@@ -59,7 +64,8 @@ export async function openOAuthFlow(token: string, secret: string, now = new Dat
     typeof payload.state !== 'string' ||
     typeof payload.nonce !== 'string' ||
     typeof payload.codeVerifier !== 'string' ||
-    payload.returnTo !== '/members/dashboard'
+    payload.returnTo !== DASHBOARD_PATH &&
+    payload.returnTo !== RESOURCES_PATH
   ) {
     throw new Error('Invalid OAuth flow token')
   }

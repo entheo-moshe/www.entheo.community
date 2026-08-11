@@ -1,7 +1,11 @@
 import { createHash } from 'node:crypto'
 import type { TokenPayload } from 'google-auth-library'
 import { describe, expect, it, vi } from 'vitest'
-import { DASHBOARD_PATH, allowReturnTo } from '../functions/_shared/config'
+import {
+  DASHBOARD_PATH,
+  RESOURCES_PATH,
+  allowReturnTo,
+} from '../functions/_shared/config'
 import {
   createGoogleAuthorizationRequest,
   exchangeGoogleCode,
@@ -90,12 +94,20 @@ describe('OAuth attempt and member session tokens', () => {
     await expect(openMemberSession(token, TEST_SECRET, afterExpiry)).rejects.toThrow()
   })
 
-  it('allows only the fixed dashboard return path', () => {
+  it('allows only the two protected member return paths', () => {
     expect(allowReturnTo(DASHBOARD_PATH)).toBe(DASHBOARD_PATH)
+    expect(allowReturnTo(RESOURCES_PATH)).toBe(RESOURCES_PATH)
     expect(allowReturnTo('https://attacker.example/steal')).toBe(DASHBOARD_PATH)
     expect(allowReturnTo('//attacker.example')).toBe(DASHBOARD_PATH)
     expect(allowReturnTo('/members/error')).toBe(DASHBOARD_PATH)
     expect(allowReturnTo(null)).toBe(DASHBOARD_PATH)
+  })
+
+  it('round-trips the protected resources return path', async () => {
+    const resourceFlow = { ...flow, returnTo: RESOURCES_PATH } as const
+    const token = await sealOAuthFlow(resourceFlow, TEST_SECRET, NOW)
+
+    await expect(openOAuthFlow(token, TEST_SECRET, NOW)).resolves.toEqual(resourceFlow)
   })
 })
 

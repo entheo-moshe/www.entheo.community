@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { DASHBOARD_PATH, MEMBERSHIP_URL } from '../functions/_shared/config'
+import {
+  DASHBOARD_PATH,
+  MEMBERSHIP_URL,
+  RESOURCES_PATH,
+} from '../functions/_shared/config'
 import { GoogleAuthenticationError } from '../functions/_shared/google-identity'
+import { MEMBER_RESOURCES } from '../functions/_shared/member-resources'
 import {
   ACTIVE_MEMBERSHIP_STATUS,
   type MemberRecord,
@@ -15,6 +20,7 @@ import { createAuthGoogleCallbackHandler } from '../functions/auth-google-callba
 import { createAuthGoogleHandler } from '../functions/auth-google'
 import { createAuthLogoutHandler } from '../functions/auth-logout'
 import { createMembersSessionHandler } from '../functions/members-session'
+import { createMemberResourcesHandler } from '../functions/members-resources'
 
 const TEST_SECRET = 'test-session-secret-with-at-least-thirty-two-characters'
 const GOOGLE_CLIENT_SECRET = 'google-client-secret-for-tests'
@@ -81,6 +87,16 @@ async function sessionRequest(
   })
 }
 
+async function resourceRequest() {
+  const session = await sealMemberSession(
+    { subject: 'google-subject', email: 'member@example.com' },
+    TEST_SECRET,
+  )
+  return request('/api/members/resources', {
+    headers: { Cookie: `entheo_member_session=${session}` },
+  })
+}
+
 beforeEach(() => {
   vi.stubEnv('AUTH_SESSION_SECRET', TEST_SECRET)
   vi.stubEnv('GOOGLE_OAUTH_CLIENT_ID', 'google-client-id')
@@ -138,6 +154,21 @@ describe('GET /api/auth/google', () => {
     expect(failureResponse.status).toBe(302)
     expect(failureResponse.headers.get('location')).toBe('/members/error?reason=service')
   })
+
+  it('preserves the allowlisted resources return path', async () => {
+    const createAuthorizationRequest = vi.fn(async (_configuration, returnTo) => ({
+      authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth?safe=1',
+      flow: { ...flow, returnTo },
+    }))
+    const handler = createAuthGoogleHandler(createAuthorizationRequest)
+
+    await handler(request(`/api/auth/google?returnTo=${encodeURIComponent(RESOURCES_PATH)}`))
+
+    expect(createAuthorizationRequest).toHaveBeenCalledWith(
+      expect.any(Object),
+      RESOURCES_PATH,
+    )
+  })
 })
 
 describe('GET /api/auth/google/callback', () => {
@@ -173,6 +204,21 @@ describe('GET /api/auth/google/callback', () => {
     expect(cookies).toContain('Max-Age=43200')
     expect(cookies).not.toContain(GOOGLE_CLIENT_SECRET)
     expect(cookies).not.toContain(AIRTABLE_TOKEN)
+  })
+
+  it('returns an active member to the protected resource page they requested', async () => {
+    const resourceFlow: OAuthFlowClaims = { ...flow, returnTo: RESOURCES_PATH }
+    const sealedFlow = await sealOAuthFlow(resourceFlow, TEST_SECRET)
+    const handler = createAuthGoogleCallbackHandler(
+      async () => identity,
+      async () => [member(ACTIVE_MEMBERSHIP_STATUS)],
+    )
+    const response = await handler(
+      await callbackRequest(resourceFlow.state, 'authorization-code', sealedFlow),
+    )
+
+    expect(response.status).toBe(302)
+    expect(response.headers.get('location')).toBe(RESOURCES_PATH)
   })
 
   it('rejects a missing or mismatched callback state before code exchange', async () => {
@@ -330,6 +376,48 @@ describe('GET /api/members/session', () => {
       expect(response.status).toBe(503)
       expect(await response.json()).toEqual({ error: 'member_service_unavailable' })
     }
+  })
+})
+
+describe('GET /api/members/resources', () => {
+  it('returns the private catalog only after rechecking active membership', async () => {
+    const findMembers = vi.fn(async () => [member(ACTIVE_MEMBERSHIP_STATUS)])
+    const handler = createMemberResourcesHandler(findMembers)
+    const response = await handler(await resourceRequest())
+
+    expect(response.status).toBe(200)
+    expect(await response.json()).toEqual({ resources: MEMBER_RESOURCES })
+    expect(findMembers).toHaveBeenCalledWith('member@example.com', AIRTABLE_TOKEN)
+    expect(response.headers.get('cache-control')).toBe('no-store')
+    expect(response.headers.get('vary')).toBe('Cookie')
+  })
+
+  it('does not disclose the catalog without an active session', async () => {
+    const activeHandler = createMemberResourcesHandler(async () => [
+      member(ACTIVE_MEMBERSHIP_STATUS),
+    ])
+    const inactiveHandler = createMemberResourcesHandler(async () => [
+      member('Expired'),
+    ])
+    const missingResponse = await activeHandler(request('/api/members/resources'))
+    const inactiveResponse = await inactiveHandler(await resourceRequest())
+
+    expect(missingResponse.status).toBe(401)
+    expect(inactiveResponse.status).toBe(403)
+    expect(JSON.stringify(await missingResponse.json())).not.toContain('signal.group')
+    expect(JSON.stringify(await inactiveResponse.json())).not.toContain('signal.group')
+  })
+
+  it('allows only GET requests', async () => {
+    const handler = createMemberResourcesHandler(async () => [
+      member(ACTIVE_MEMBERSHIP_STATUS),
+    ])
+    const response = await handler(
+      request('/api/members/resources', { method: 'POST' }),
+    )
+
+    expect(response.status).toBe(405)
+    expect(response.headers.get('allow')).toBe('GET')
   })
 })
 
