@@ -259,7 +259,11 @@ function WaxSeal({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${label.toLowerCase()} Entheo Community (opens in a new tab)`}
+      aria-label={
+        label === 'BEGIN'
+          ? 'Begin joining Entheo Community (opens in a new tab)'
+          : 'Join Entheo Community (opens in a new tab)'
+      }
     >
       <svg viewBox="0 0 108 108" aria-hidden>
         <defs>
@@ -325,7 +329,7 @@ const STEPS = [
   ['V', 'Minister of Ceremony', 'Train, under guidance & evaluation, to hold space and lead the rite itself.'],
 ] as const
 
-function LandingPage() {
+export function LandingPage() {
   useTitle('Entheo Community — Welcome Home')
   useReveal()
 
@@ -358,7 +362,7 @@ function LandingPage() {
             <a href="#belief">Belief</a>
             <a href="#sacraments">Practice</a>
             <a href="#assembly">Gather</a>
-            <a href="#path">The path</a>
+            <a href="#path">Path</a>
           </div>
           <a
             className="d1-nav-join"
@@ -367,7 +371,10 @@ function LandingPage() {
             rel="noopener noreferrer"
             aria-label="Join Entheo Community (opens in a new tab)"
           >
-            Join us <span aria-hidden>↗</span>
+            <span>
+              Join<span className="d1-nav-join-us"> us</span>
+            </span>{' '}
+            <span aria-hidden>↗</span>
           </a>
         </nav>
 

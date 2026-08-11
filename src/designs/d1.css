@@ -276,7 +276,7 @@
 
   .d1-index-links {
     min-width: 0;
-    gap: 0.9rem;
+    gap: 0.55rem;
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -293,9 +293,17 @@
     white-space: nowrap;
   }
 
+  .d1-index-links a {
+    letter-spacing: 0.07em;
+  }
+
   .d1-nav-join {
     min-width: auto;
     padding-inline: 0.65rem;
+  }
+
+  .d1-nav-join-us {
+    display: none;
   }
 }
 

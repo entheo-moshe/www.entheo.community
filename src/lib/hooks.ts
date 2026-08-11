@@ -22,7 +22,7 @@ export function useReveal() {
 
     const revealAll = () => els.forEach((el) => el.classList.add('is-seen'))
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
       revealAll()
       return
     }
