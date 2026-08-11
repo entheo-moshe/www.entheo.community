@@ -1,5 +1,14 @@
 import type { ReactNode } from 'react'
+import { MEMBER_RESOURCES_PATH } from '../lib/member-session'
 import '../designs/members.css'
+
+type MemberFolioSection = 'dashboard' | 'resources'
+
+interface MemberFolioProps {
+  children: ReactNode
+  section?: MemberFolioSection
+  variant?: 'leaf' | 'archive'
+}
 
 function MemberEmblem() {
   return (
@@ -15,7 +24,11 @@ function MemberEmblem() {
   )
 }
 
-export function MemberFolio({ children }: { children: ReactNode }) {
+export function MemberFolio({
+  children,
+  section,
+  variant = 'leaf',
+}: MemberFolioProps) {
   return (
     <div className="member-page">
       <a className="member-skip" href="#member-main">
@@ -27,14 +40,34 @@ export function MemberFolio({ children }: { children: ReactNode }) {
           <a className="member-brand" href="/" aria-label="Entheo Community home">
             Entheo Community
           </a>
-          <p className="member-masthead-mark">
-            <span aria-hidden="true">No. 01</span>
-            <span>Members&rsquo; Folio</span>
-          </p>
+          <div className="member-masthead-tools">
+            <p className="member-masthead-mark">
+              <span aria-hidden="true">Private</span>
+              <span>Members&rsquo; Folio</span>
+            </p>
+            {section ? (
+              <nav className="member-nav" aria-label="Member area">
+                <a
+                  href="/members/dashboard"
+                  aria-current={section === 'dashboard' ? 'page' : undefined}
+                >
+                  Hearth
+                </a>
+                <a
+                  href={MEMBER_RESOURCES_PATH}
+                  aria-current={section === 'resources' ? 'page' : undefined}
+                >
+                  Resources
+                </a>
+              </nav>
+            ) : null}
+          </div>
         </header>
 
         <main className="member-main" id="member-main" tabIndex={-1}>
-          <article className="member-leaf">
+          <article
+            className={`member-leaf${variant === 'archive' ? ' member-leaf--archive' : ''}`}
+          >
             <MemberEmblem />
             {children}
           </article>

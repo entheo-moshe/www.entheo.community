@@ -4,7 +4,12 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import { isRedirect, type AnyRedirect } from '@tanstack/react-router'
 import {
+  getMemberResources,
+  type MemberResource,
+} from '../lib/member-resources'
+import {
   MEMBER_LOGIN_URL,
+  MEMBER_RESOURCES_LOGIN_URL,
   MEMBERSHIP_URL,
   getMemberSession,
   logoutMember,
@@ -18,6 +23,10 @@ import {
   MemberErrorPage,
   normalizeMemberErrorReason,
 } from '../routes/members.error'
+import {
+  MemberResources,
+  resolveMemberResourcesAccess,
+} from '../routes/members.resources'
 
 afterEach(() => cleanup())
 
@@ -30,6 +39,67 @@ function response(status: number, body?: unknown) {
 function fetchResponse(value: Response): FetchImplementation {
   return async () => value
 }
+
+const MEMBER_RESOURCES_FIXTURE: MemberResource[] = [
+  {
+    id: 'ordination',
+    sealLabel: 'Practice & stewardship',
+    kicker: 'Sacramental practice',
+    title: 'Sacrament Minister Ordination',
+    description: [
+      {
+        text: 'Read the Sacrament Minister Handbook and then pass the Ordination Assessment.',
+        emphasis: false,
+      },
+    ],
+    actions: [
+      {
+        label: 'Read the handbook',
+        href: 'https://docs.google.com/document/d/1lqO1uW1rlbscVpJObPjRSyZyvRhXbWVWFgvMCr9bxKI/edit?usp=sharing',
+      },
+      {
+        label: 'Take the assessment',
+        href: 'https://forms.gle/7xQKCGX23QjQE6od7',
+      },
+    ],
+  },
+  {
+    id: 'signal',
+    sealLabel: 'Community channels',
+    kicker: 'Gather & connect',
+    title: 'Signal Chats',
+    description: [
+      { text: 'Connect in the', emphasis: false },
+      { text: 'Entheo Members chat', emphasis: true },
+      { text: 'and follow announcements.', emphasis: false },
+    ],
+    actions: [
+      {
+        label: 'Join Entheo Members chat',
+        href: 'https://signal.group/#members-invite',
+      },
+      {
+        label: 'Join Entheo Announce channel',
+        href: 'https://signal.group/#announcements-invite',
+      },
+    ],
+  },
+  {
+    id: 'vault',
+    sealLabel: 'Recorded teachings',
+    kicker: 'Learn & revisit',
+    title: 'Monthly Teachings Vault',
+    description: [
+      { text: 'Access the monthly teaching recordings.', emphasis: false },
+    ],
+    actions: [
+      {
+        label: 'Open the teachings vault',
+        href: 'https://drive.google.com/drive/folders/teachings-vault',
+      },
+    ],
+  },
+]
 
 async function caughtRedirect(promise: Promise<unknown>) {
   try {
@@ -116,6 +186,51 @@ describe('member session client boundary', () => {
   })
 })
 
+describe('member resources client boundary', () => {
+  it('requests the protected resource endpoint and accepts its bounded shape', async () => {
+    let capturedInput: RequestInfo | URL | undefined
+    let capturedInit: RequestInit | undefined
+    const fetchImplementation: FetchImplementation = async (input, init) => {
+      capturedInput = input
+      capturedInit = init
+      return response(200, { resources: MEMBER_RESOURCES_FIXTURE })
+    }
+
+    await expect(getMemberResources(fetchImplementation)).resolves.toEqual({
+      kind: 'active',
+      resources: MEMBER_RESOURCES_FIXTURE,
+    })
+    expect(capturedInput).toBe('/api/members/resources')
+    expect(capturedInit).toEqual({
+      method: 'GET',
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    })
+  })
+
+  it('fails closed for malformed catalogs, insecure links, and network errors', async () => {
+    const insecureFixture = structuredClone(MEMBER_RESOURCES_FIXTURE)
+    insecureFixture[0].actions[0].href = 'http://example.com/not-secure'
+
+    for (const body of [
+      { resources: MEMBER_RESOURCES_FIXTURE.slice(0, 2) },
+      { resources: insecureFixture },
+      { resources: [{ id: 'unknown' }] },
+    ]) {
+      await expect(
+        getMemberResources(fetchResponse(response(200, body))),
+      ).resolves.toEqual({ kind: 'service-error' })
+    }
+
+    await expect(
+      getMemberResources(async () => {
+        throw new Error('network unavailable')
+      }),
+    ).resolves.toEqual({ kind: 'service-error' })
+  })
+})
+
 describe('protected dashboard route decisions', () => {
   it('returns only active member display data', async () => {
     await expect(
@@ -180,8 +295,39 @@ describe('protected dashboard route decisions', () => {
   })
 })
 
+describe('protected resource route decisions', () => {
+  it('returns the authenticated server catalog', async () => {
+    await expect(
+      resolveMemberResourcesAccess(
+        fetchResponse(response(200, { resources: MEMBER_RESOURCES_FIXTURE })),
+      ),
+    ).resolves.toEqual(MEMBER_RESOURCES_FIXTURE)
+  })
+
+  it('returns signed-out visitors to the requested resource page after login', async () => {
+    const redirect = await caughtRedirect(
+      resolveMemberResourcesAccess(fetchResponse(response(401))),
+    )
+
+    expect(redirect.options.href).toBe(MEMBER_RESOURCES_LOGIN_URL)
+    expect(redirect.options.reloadDocument).toBe(true)
+  })
+
+  it.each([
+    [403, 'inactive'],
+    [500, 'service'],
+  ] as const)('fails closed for a %i response', async (status, reason) => {
+    const redirect = await caughtRedirect(
+      resolveMemberResourcesAccess(fetchResponse(response(status))),
+    )
+
+    expect(redirect.options.to).toBe('/members/error')
+    expect(redirect.options.search).toEqual({ reason })
+  })
+})
+
 describe('member route presentation', () => {
-  it('renders a welcome-only dashboard with status, Home, and Log out actions', () => {
+  it('renders the protected dashboard with status and member navigation', () => {
     const { container } = render(
       <MemberDashboard
         member={{ displayName: 'Miriam', membershipStatus: 'Active & Current' }}
@@ -191,9 +337,54 @@ describe('member route presentation', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Welcome home, Miriam.' })).toBeTruthy()
     expect(screen.getByText('Active & Current')).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Home' }).getAttribute('href')).toBe('/')
+    expect(
+      screen.getByRole('link', { name: 'Member resources' }).getAttribute('href'),
+    ).toBe('/members/resources')
     expect(screen.getByRole('button', { name: 'Log out' })).toBeTruthy()
     expect(container.textContent).not.toContain('@')
     expect(container.querySelectorAll('main')).toHaveLength(1)
+  })
+
+  it('recreates every member resource with its verified destination', () => {
+    render(<MemberResources resources={MEMBER_RESOURCES_FIXTURE} />)
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Member Resources' }),
+    ).toBeTruthy()
+    expect(
+      screen.getByRole('heading', {
+        level: 2,
+        name: 'Sacrament Minister Ordination',
+      }),
+    ).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 2, name: 'Signal Chats' })).toBeTruthy()
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Monthly Teachings Vault' }),
+    ).toBeTruthy()
+
+    const expectedLinks = [
+      ['Read the handbook', MEMBER_RESOURCES_FIXTURE[0].actions[0].href],
+      ['Take the assessment', MEMBER_RESOURCES_FIXTURE[0].actions[1].href],
+      ['Join Entheo Members chat', MEMBER_RESOURCES_FIXTURE[1].actions[0].href],
+      ['Join Entheo Announce channel', MEMBER_RESOURCES_FIXTURE[1].actions[1].href],
+      ['Open the teachings vault', MEMBER_RESOURCES_FIXTURE[2].actions[0].href],
+    ] as const
+
+    for (const [name, href] of expectedLinks) {
+      const link = screen.getByRole('link', { name })
+      expect(link.getAttribute('href')).toBe(href)
+      expect(link.getAttribute('target')).toBe('_blank')
+      expect(link.getAttribute('rel')).toBe('noreferrer')
+    }
+
+    expect(
+      screen.getByRole('link', { name: 'Resources' }).getAttribute('aria-current'),
+    ).toBe('page')
+    expect(
+      screen
+        .getByRole('link', { name: /Return to the members’ hearth/i })
+        .getAttribute('href'),
+    ).toBe('/members/dashboard')
   })
 
   it('renders the exact inactive reactivation note with an accessible mail link', () => {

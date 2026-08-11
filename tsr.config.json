@@ -15,6 +15,11 @@
       },
       {
         "type": "route",
+        "path": "/members/resources",
+        "file": "members.resources.tsx"
+      },
+      {
+        "type": "route",
         "path": "/members/error",
         "file": "members.error.tsx"
       }

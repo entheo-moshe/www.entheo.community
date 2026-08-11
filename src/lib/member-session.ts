@@ -1,7 +1,10 @@
 export const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'
 export const MEMBER_DASHBOARD_PATH = '/members/dashboard'
+export const MEMBER_RESOURCES_PATH = '/members/resources'
 export const MEMBER_LOGIN_URL =
   '/api/auth/google?returnTo=%2Fmembers%2Fdashboard'
+export const MEMBER_RESOURCES_LOGIN_URL =
+  '/api/auth/google?returnTo=%2Fmembers%2Fresources'
 
 export interface DashboardMember {
   displayName: string

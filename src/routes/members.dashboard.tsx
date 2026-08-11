@@ -3,6 +3,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 import { MemberFolio } from '../components/member-folio'
 import {
   MEMBER_LOGIN_URL,
+  MEMBER_RESOURCES_PATH,
   MEMBERSHIP_URL,
   getMemberSession,
   logoutMember,
@@ -67,7 +68,7 @@ export function MemberDashboard({ member }: { member: DashboardMember }) {
   }
 
   return (
-    <MemberFolio>
+    <MemberFolio section="dashboard">
       <p className="member-eyebrow">Members&rsquo; Hearth · Entry I</p>
       <h1 className="member-title">Welcome home, {member.displayName}.</h1>
       <p className="member-intro">Your place in the fellowship is open.</p>
@@ -86,8 +87,11 @@ export function MemberDashboard({ member }: { member: DashboardMember }) {
         <a className="member-action" href="/">
           Home
         </a>
+        <a className="member-action primary" href={MEMBER_RESOURCES_PATH}>
+          Member resources
+        </a>
         <button
-          className="member-action primary"
+          className="member-action"
           type="button"
           disabled={isLoggingOut}
           onClick={handleLogout}
