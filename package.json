@@ -6,7 +6,8 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vite dev --port 30000",
+    "dev": "concurrently --kill-others --names site,auth --prefix-colors blue,green \"npm:dev:site\" \"npm:dev:netlify\"",
+    "dev:site": "vite dev --port 30000 --strictPort",
     "predev:netlify": "npm run build",
     "dev:netlify": "npx --yes netlify-cli@27.1.1 dev --port 8888",
     "dev:netlify:site": "vite preview --host 127.0.0.1 --port 30002 --strictPort",
@@ -43,6 +44,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.2.1",
     "jsdom": "^28.1.0",
     "puppeteer-core": "^25.1.0",
     "typescript": "^6.0.2",

@@ -14,16 +14,18 @@ npm install
 npm run dev
 ```
 
-The development server runs at `http://localhost:30000`.
+The command starts the Vite UI at `http://localhost:30000` and the Netlify
+Functions boundary at `http://localhost:8888`. Vite proxies `/api` requests to
+Netlify Dev, so member login works from the normal port 30000 development URL.
 
-Authentication and Netlify Functions run through the local Netlify proxy:
+To run only the full Netlify-served production build and Functions proxy:
 
 ```bash
 npm run dev:netlify
 ```
 
-The script creates a fresh production client build, then serves the complete app
-at `http://localhost:8888` with the local Functions proxy.
+This script creates a fresh production client build, then serves the complete
+app at `http://localhost:8888`.
 
 ## Member authentication
 

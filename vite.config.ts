@@ -6,4 +6,12 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [tanstackRouter({ target: 'react' }), tailwindcss(), viteReact()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
+      },
+    },
+  },
 })
