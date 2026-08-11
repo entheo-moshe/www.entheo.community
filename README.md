@@ -16,10 +16,41 @@ npm run dev
 
 The development server runs at `http://localhost:30000`.
 
+Authentication and Netlify Functions run through the local Netlify proxy:
+
+```bash
+npm run dev:netlify
+```
+
+The complete local app is then available at `http://localhost:8888`.
+
+## Member authentication
+
+The member area uses Google OpenID Connect and verifies membership against the
+read-only Airtable `Members` table from server-side Netlify Functions. These
+variables must be present locally in `.env` and in the Netlify Functions
+environment for production:
+
+- `AIRTABLE_API_TOKEN`
+- `GOOGLE_OAUTH_CLIENT_ID`
+- `GOOGLE_OAUTH_CLIENT_SECRET`
+- `AUTH_SESSION_SECRET` — a unique random value of at least 32 characters
+
+The committed code never exposes these values to Vite or browser JavaScript.
+The development-only sentinel in the ignored local `.env` derives an isolated
+local signing key from the Google client secret; Netlify production rejects that
+sentinel and requires an independent `AUTH_SESSION_SECRET`.
+
+Register these exact authorized redirect URIs in Google Cloud:
+
+- Production: `https://www.entheo.community/api/auth/google/callback`
+- Local: `http://localhost:8888/api/auth/google/callback`
+
 ## Build
 
 ```bash
 npm run build
+npm run build:netlify
 npm run preview
 ```
 

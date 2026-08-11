@@ -7,10 +7,14 @@
   },
   "scripts": {
     "dev": "vite dev --port 30000",
+    "dev:netlify": "npx --yes netlify-cli@27.1.1 dev --port 8888",
+    "dev:netlify:site": "vite dev --host 127.0.0.1 --port 30002 --strictPort",
     "generate-routes": "tsr generate",
     "build": "vite build",
+    "build:netlify": "npx --yes netlify-cli@27.1.1 build --offline",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -20,12 +24,15 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "^1.132.0",
+    "google-auth-library": "^11.0.1",
+    "jose": "^6.2.8",
     "lucide-react": "^0.545.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@netlify/functions": "^5.3.0",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/devtools-vite": "latest",
     "@tanstack/router-cli": "^1.132.0",

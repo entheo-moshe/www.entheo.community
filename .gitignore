@@ -14,3 +14,7 @@ todos.json
 
 # QA screenshots
 screenshots/
+
+# Local Netlify Dev artifacts
+.netlify/
+deno.lock
