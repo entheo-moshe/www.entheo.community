@@ -211,7 +211,9 @@
 .member-status {
   display: grid;
   grid-template-columns: auto auto;
+  align-items: center;
   justify-content: center;
+  text-align: center;
   gap: 0.2rem 1.25rem;
   width: min(390px, 100%);
   margin: clamp(1.8rem, 5vw, 2.5rem) auto 0;
