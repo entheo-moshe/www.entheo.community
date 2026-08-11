@@ -8,13 +8,9 @@
 [dev]
   command = "npm run dev:netlify:site"
   targetPort = 30002
+  publish = "dist"
   port = 8888
   autoLaunch = false
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
 
 [[headers]]
   for = "/*"

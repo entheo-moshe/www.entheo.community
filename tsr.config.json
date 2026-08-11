@@ -7,6 +7,16 @@
       {
         "type": "index",
         "file": "1.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/members/dashboard",
+        "file": "members.dashboard.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/members/error",
+        "file": "members.error.tsx"
       }
     ]
   }

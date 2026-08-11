@@ -3,6 +3,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, render, screen, within } from '@testing-library/react'
 import { LandingPage } from '../routes/1'
+import { MEMBER_LOGIN_URL } from '../lib/member-session'
 
 const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'
 const ASSEMBLY_URL = 'https://www.entheo.community/events/weekly-assembly'
@@ -40,6 +41,15 @@ describe('LandingPage', () => {
     )
     expect(within(navigation).getByRole('link', { name: 'Path' }).getAttribute('href')).toBe(
       '#path',
+    )
+
+    const actions = navigation.querySelector('.d1-nav-actions')
+    expect(actions).not.toBeNull()
+    const [loginAction, joinAction] = within(actions as HTMLElement).getAllByRole('link')
+    expect(loginAction.textContent).toMatch(/log in/i)
+    expect(loginAction.getAttribute('href')).toBe(MEMBER_LOGIN_URL)
+    expect(joinAction.getAttribute('aria-label')).toBe(
+      'Join Entheo Community (opens in a new tab)',
     )
   })
 

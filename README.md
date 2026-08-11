@@ -22,7 +22,8 @@ Authentication and Netlify Functions run through the local Netlify proxy:
 npm run dev:netlify
 ```
 
-The complete local app is then available at `http://localhost:8888`.
+The script creates a fresh production client build, then serves the complete app
+at `http://localhost:8888` with the local Functions proxy.
 
 ## Member authentication
 
@@ -56,7 +57,9 @@ npm run preview
 
 ## Structure
 
-- `src/routes/1.tsx` — the sole page, mounted as the `/` index route
-- `src/designs/d1.css` — the landing page's visual system and responsive layout
-- `src/lib/hooks.ts` — document-title and reveal-on-scroll behavior
-- `tsr.config.json` — maps `1.tsx` to `/` through TanStack Router's virtual route configuration
+- `src/routes/1.tsx` — the public landing page mounted at `/`
+- `src/routes/members.*.tsx` — the protected dashboard and member error screens
+- `netlify/functions/` — server-only Google authentication and Airtable authorization
+- `src/designs/` — the public folio, member header, and private member visual systems
+- `src/lib/` — page behavior and the minimized member-session client boundary
+- `tsr.config.json` — the explicit TanStack virtual route configuration

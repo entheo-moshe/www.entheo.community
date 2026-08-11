@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "vite dev --port 30000",
+    "predev:netlify": "npm run build",
     "dev:netlify": "npx --yes netlify-cli@27.1.1 dev --port 8888",
-    "dev:netlify:site": "vite dev --host 127.0.0.1 --port 30002 --strictPort",
+    "dev:netlify:site": "vite preview --host 127.0.0.1 --port 30002 --strictPort",
     "generate-routes": "tsr generate",
     "build": "vite build",
     "build:netlify": "npx --yes netlify-cli@27.1.1 build --offline",

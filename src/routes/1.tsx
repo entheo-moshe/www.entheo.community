@@ -1,12 +1,13 @@
 import type { CSSProperties, SVGProps } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useReveal, useTitle } from '../lib/hooks'
+import { MEMBER_LOGIN_URL, MEMBERSHIP_URL } from '../lib/member-session'
 import '../designs/d1.css'
+import '../designs/member-header.css'
 
 export const Route = createFileRoute('/')({ component: LandingPage })
 
 const vars = (v: Record<string, string>) => v as CSSProperties
-const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'
 const ASSEMBLY_URL = 'https://www.entheo.community/events/weekly-assembly'
 
 /* ---------------------------------------------------------------- engraving
@@ -365,18 +366,23 @@ export function LandingPage() {
               <a href="#assembly">Gather</a>
               <a href="#path">Path</a>
             </div>
-            <a
-              className="d1-nav-join"
-              href={MEMBERSHIP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Join Entheo Community (opens in a new tab)"
-            >
-              <span>
-                Join<span className="d1-nav-join-us"> us</span>
-              </span>{' '}
-              <span aria-hidden>↗</span>
-            </a>
+            <div className="d1-nav-actions">
+              <a className="d1-nav-login" href={MEMBER_LOGIN_URL}>
+                Log in
+              </a>
+              <a
+                className="d1-nav-join"
+                href={MEMBERSHIP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Join Entheo Community (opens in a new tab)"
+              >
+                <span>
+                  Join<span className="d1-nav-join-us"> us</span>
+                </span>{' '}
+                <span aria-hidden>↗</span>
+              </a>
+            </div>
           </nav>
         </header>
 

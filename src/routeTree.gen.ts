@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as R1RouteImport } from './routes/1'
+import { Route as membersDoterrorRouteImport } from './routes/members.error'
+import { Route as membersDotdashboardRouteImport } from './routes/members.dashboard'
 
 const R1Route = R1RouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const membersDoterrorRoute = membersDoterrorRouteImport.update({
+  id: '/members/error',
+  path: '/members/error',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const membersDotdashboardRoute = membersDotdashboardRouteImport.update({
+  id: '/members/dashboard',
+  path: '/members/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof R1Route
+  '/members/dashboard': typeof membersDotdashboardRoute
+  '/members/error': typeof membersDoterrorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof R1Route
+  '/members/dashboard': typeof membersDotdashboardRoute
+  '/members/error': typeof membersDoterrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof R1Route
+  '/members/dashboard': typeof membersDotdashboardRoute
+  '/members/error': typeof membersDoterrorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/members/dashboard' | '/members/error'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/members/dashboard' | '/members/error'
+  id: '__root__' | '/' | '/members/dashboard' | '/members/error'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   R1Route: typeof R1Route
+  membersDotdashboardRoute: typeof membersDotdashboardRoute
+  membersDoterrorRoute: typeof membersDoterrorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof R1RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/members/error': {
+      id: '/members/error'
+      path: '/members/error'
+      fullPath: '/members/error'
+      preLoaderRoute: typeof membersDoterrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/members/dashboard': {
+      id: '/members/dashboard'
+      path: '/members/dashboard'
+      fullPath: '/members/dashboard'
+      preLoaderRoute: typeof membersDotdashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   R1Route: R1Route,
+  membersDotdashboardRoute: membersDotdashboardRoute,
+  membersDoterrorRoute: membersDoterrorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,122 @@
+.d1-nav-actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.d1-nav-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  min-height: 42px;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(36, 54, 39, 0.72);
+  background: rgba(248, 241, 224, 0.28);
+  color: var(--ink);
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.d1-nav-login:hover {
+  border-color: var(--ink);
+  background: rgba(36, 54, 39, 0.08);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 860px) {
+  .d1 :where(#hero-title, #belief, #sacraments, #assembly, #path) {
+    scroll-margin-top: 11rem;
+  }
+
+  .d1-site-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-height: auto;
+    margin-inline: -0.45rem;
+    padding: 0.45rem 0.35rem 0.4rem;
+  }
+
+  .d1-brand {
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .d1-chapter-nav {
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+    min-height: 0;
+    padding-top: 0.2rem;
+    border-top: 1px solid rgba(128, 96, 26, 0.2);
+  }
+
+  .d1-index-links {
+    width: 100%;
+    min-height: 42px;
+    justify-content: space-around;
+    gap: clamp(0.4rem, 3vw, 1.15rem);
+    overflow: visible;
+  }
+
+  .d1-index-links a {
+    min-height: 40px;
+    font-size: 0.62rem;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+  }
+
+  .d1-nav-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 0.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid rgba(128, 96, 26, 0.2);
+  }
+
+  .d1-nav-login,
+  .d1-nav-join {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 0.42rem 0.55rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .d1-nav-join-us {
+    display: inline;
+  }
+}
+
+@media (max-width: 400px) {
+  .d1-brand-name {
+    font-size: 0.72rem;
+    letter-spacing: 0.19em;
+  }
+
+  .d1-index-links {
+    justify-content: space-between;
+    gap: 0.28rem;
+  }
+
+  .d1-index-links a {
+    font-size: 0.57rem;
+    letter-spacing: 0.045em;
+  }
+}
