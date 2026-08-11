@@ -347,36 +347,38 @@ export function LandingPage() {
       </div>
 
       <div className="d1-shell">
-        <header className="d1-site-header">
-          <div className="d1-nav d1-up">
-            <span className="left">Est. MMXXIII</span>
-            <a className="d1-brand" href="#top" aria-label="Entheo Community home">
+        <header className="d1-site-header d1-up">
+          <a className="d1-brand" href="#top" aria-label="Entheo Community home">
+            <span className="d1-brand-name">
               ENTHEO&nbsp;COMMUNITY
-            </a>
-            <span className="right">Welcome Home</span>
-          </div>
-          <div className="d1-nav-rule d1-up" />
-        </header>
-        <nav className="d1-chapter-nav d1-up" aria-label="Primary">
-          <div className="d1-index-links">
-            <a href="#belief">Belief</a>
-            <a href="#sacraments">Practice</a>
-            <a href="#assembly">Gather</a>
-            <a href="#path">Path</a>
-          </div>
-          <a
-            className="d1-nav-join"
-            href={MEMBERSHIP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Join Entheo Community (opens in a new tab)"
-          >
-            <span>
-              Join<span className="d1-nav-join-us"> us</span>
-            </span>{' '}
-            <span aria-hidden>↗</span>
+            </span>
+            <span className="d1-brand-meta" aria-hidden>
+              <span>Est. MMXXIII</span>
+              <span>·</span>
+              <span>Welcome Home</span>
+            </span>
           </a>
-        </nav>
+          <nav className="d1-chapter-nav" aria-label="Primary">
+            <div className="d1-index-links">
+              <a href="#belief">Belief</a>
+              <a href="#sacraments">Practice</a>
+              <a href="#assembly">Gather</a>
+              <a href="#path">Path</a>
+            </div>
+            <a
+              className="d1-nav-join"
+              href={MEMBERSHIP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Join Entheo Community (opens in a new tab)"
+            >
+              <span>
+                Join<span className="d1-nav-join-us"> us</span>
+              </span>{' '}
+              <span aria-hidden>↗</span>
+            </a>
+          </nav>
+        </header>
 
         <main>
           {/* ------------------------------------------------ frontispiece */}

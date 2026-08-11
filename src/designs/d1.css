@@ -124,73 +124,85 @@
 }
 
 .d1 :where(#hero-title, #belief, #sacraments, #assembly, #path) {
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 6.5rem;
 }
 
 /* --- Masthead --------------------------------------------------------------- */
 
 .d1-site-header {
-  position: relative;
-  z-index: 30;
-}
-
-.d1-nav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: baseline;
-  gap: 1rem;
-  padding-top: clamp(1.8rem, 4vw, 2.6rem);
-  font-variant: small-caps;
-  letter-spacing: 0.22em;
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-}
-
-.d1-nav .left { text-align: left; }
-.d1-nav .right { text-align: right; }
-
-.d1-brand {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  font-family: "Cinzel", serif;
-  font-weight: 600;
-  font-variant: normal;
-  letter-spacing: 0.3em;
-  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
-  color: var(--ink);
-  text-align: center;
-  white-space: nowrap;
-  text-decoration: none;
-}
-
-.d1-nav-rule {
-  margin-top: 0.35rem;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid rgba(168, 132, 44, 0.3);
-  height: 3px;
-}
-
-.d1-chapter-nav {
   position: sticky;
   top: clamp(13px, 1.4vw, 18px);
   z-index: 30;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  min-height: 54px;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  min-height: 74px;
   margin-inline: -0.75rem;
-  padding: 0.4rem 0.55rem 0.4rem 0.9rem;
+  padding: 0.6rem 0.55rem 0.65rem 0.9rem;
+  border-top: 1px solid var(--rule);
   border-bottom: 1px solid rgba(128, 96, 26, 0.32);
-  background: rgba(243, 234, 212, 0.88);
-  box-shadow: 0 12px 24px rgba(72, 55, 20, 0.04);
+  background: rgba(243, 234, 212, 0.9);
+  box-shadow: 0 12px 24px rgba(72, 55, 20, 0.045);
   backdrop-filter: blur(14px) saturate(0.9);
+}
+
+.d1-site-header::after {
+  content: "";
+  position: absolute;
+  right: 0.55rem;
+  bottom: 3px;
+  left: 0.9rem;
+  height: 1px;
+  background: rgba(128, 96, 26, 0.18);
+  pointer-events: none;
+}
+
+.d1-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.08rem;
+  min-height: 52px;
+  text-decoration: none;
+}
+
+.d1-brand-name {
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  font-variant: normal;
+  letter-spacing: 0.24em;
+  font-size: clamp(0.78rem, 1.35vw, 0.92rem);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.d1-brand-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--gold);
+  font-size: 0.65rem;
+  font-variant: small-caps;
+  letter-spacing: 0.13em;
+  line-height: 1.2;
+}
+
+.d1-chapter-nav {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  min-width: 0;
 }
 
 .d1-index-links {
   display: flex;
+  flex: 1 1 auto;
   align-items: center;
+  justify-content: center;
   gap: clamp(0.85rem, 2.7vw, 2.2rem);
 }
 
@@ -258,20 +270,38 @@
 }
 
 @media (max-width: 680px) {
-  .d1-nav {
-    grid-template-columns: 1fr;
-    padding-top: 1.35rem;
+  .d1 :where(#hero-title, #belief, #sacraments, #assembly, #path) {
+    scroll-margin-top: 8rem;
   }
-  .d1-nav .left,
-  .d1-nav .right {
+
+  .d1-site-header {
+    flex-direction: column;
+    gap: 0;
+    min-height: auto;
+    margin-inline: -0.45rem;
+    padding: 0.45rem 0.35rem 0.35rem;
+  }
+
+  .d1-site-header::after {
+    right: 0.35rem;
+    left: 0.35rem;
+  }
+
+  .d1-brand {
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .d1-brand-meta {
     display: none;
   }
 
   .d1-chapter-nav {
+    width: 100%;
     gap: 0.65rem;
     min-height: 50px;
-    margin-inline: -0.45rem;
-    padding: 0.3rem 0.35rem 0.3rem 0.6rem;
+    padding: 0.25rem 0 0;
+    border-top: 1px solid rgba(128, 96, 26, 0.2);
   }
 
   .d1-index-links {

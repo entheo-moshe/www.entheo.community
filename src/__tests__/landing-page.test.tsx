@@ -14,6 +14,9 @@ describe('LandingPage', () => {
     const { container } = render(<LandingPage />)
 
     expect(document.title).toBe('Entheo Community — Welcome Home')
+    expect(container.querySelectorAll('.d1-site-header')).toHaveLength(1)
+    expect(container.querySelectorAll('.d1-site-header > .d1-brand')).toHaveLength(1)
+    expect(container.querySelectorAll('.d1-site-header > nav[aria-label="Primary"]')).toHaveLength(1)
     expect(container.querySelectorAll('main')).toHaveLength(1)
     expect(screen.getByRole('heading', { level: 1, name: 'The God Within' })).toBeTruthy()
     expect(screen.getByRole('region', { name: 'What we believe' })).toBeTruthy()
