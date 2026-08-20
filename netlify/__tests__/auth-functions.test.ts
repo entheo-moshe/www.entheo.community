@@ -9,7 +9,7 @@ import { MEMBER_RESOURCES } from '../functions/_shared/member-resources'
 import {
   ACTIVE_MEMBERSHIP_STATUS,
   type MemberRecord,
-} from '../functions/_shared/member-directory'
+} from '../functions/_shared/member-access'
 import {
   openMemberSession,
   sealMemberSession,

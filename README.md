@@ -63,7 +63,8 @@ npm run preview
 - `src/features/landing/` — public landing-page composition, content, and SVG illustrations
 - `src/features/members/` — member pages, folio shell, fail-closed API contracts, validation, and access policy
 - `src/config/member-navigation.ts` — public member paths and login destinations
-- `netlify/functions/` — server-only Google authentication and Airtable authorization
+- `netlify/functions/` — thin server endpoints for Google authentication and protected member data
+- `netlify/functions/_shared/` — HTTP/session adapters, membership policy, and the Airtable directory gateway
 - `src/designs/` — the public folio, member header, and private member visual systems
 - `src/lib/` — shared page behavior and typed style helpers
 - `tsr.config.json` — the explicit TanStack virtual route configuration

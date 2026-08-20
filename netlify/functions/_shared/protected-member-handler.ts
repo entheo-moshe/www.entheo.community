@@ -14,9 +14,11 @@ import {
 } from './http'
 import {
   decideMemberAccess,
+  type MemberAccessDecision,
+} from './member-access'
+import {
   findMembersByEmail,
   type FindMembersByEmail,
-  type MemberAccessDecision,
 } from './member-directory'
 import { openMemberSession } from './tokens'
 

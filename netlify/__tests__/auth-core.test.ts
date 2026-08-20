@@ -15,9 +15,9 @@ import {
 import {
   ACTIVE_MEMBERSHIP_STATUS,
   decideMemberAccess,
-  findMembersByEmail,
   type MemberRecord,
-} from '../functions/_shared/member-directory'
+} from '../functions/_shared/member-access'
+import { findMembersByEmail } from '../functions/_shared/member-directory'
 import {
   FLOW_TTL_SECONDS,
   SESSION_TTL_SECONDS,

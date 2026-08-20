@@ -5,7 +5,7 @@ import {
   type TokenPayload,
 } from 'google-auth-library'
 import type { OAuthFlowClaims } from './tokens'
-import { normalizeVerifiedEmail } from './member-directory'
+import { normalizeVerifiedEmail } from './verified-email'
 import { secretsMatch } from './tokens'
 
 export interface GoogleConfiguration {

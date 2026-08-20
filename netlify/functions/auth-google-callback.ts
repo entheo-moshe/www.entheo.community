@@ -23,8 +23,8 @@ import {
   setSessionCookie,
   singleQueryParameter,
 } from './_shared/http'
+import { decideMemberAccess } from './_shared/member-access'
 import {
-  decideMemberAccess,
   findMembersByEmail,
   type FindMembersByEmail,
 } from './_shared/member-directory'
