@@ -1,14 +1,14 @@
+import { MEMBERSHIP_URL } from '../../config/member-navigation'
 import { useReveal, useTitle } from '../../lib/hooks'
-import {
-  MEMBER_LOGIN_URL,
-  MEMBERSHIP_URL,
-} from '../../config/member-navigation'
 import { cssVariables } from '../../lib/css'
 import {
+  ASSEMBLY_IMAGE_URL,
   ASSEMBLY_URL,
+  ENTHEISM_URL,
   HERO_MOTE_POSITIONS,
   MINISTRY_STEPS,
   SACRAMENT_PLATES,
+  WELCOME_VIDEO_URL,
 } from './landing-content'
 import {
   Fern,
@@ -16,8 +16,11 @@ import {
   FrameCorner,
   SacramentIllustration,
   SunGlyph,
-  WaxSeal,
 } from './landing-illustrations'
+import { MembershipAction } from './membership-action'
+import { FaqAccordion } from '../faqs'
+import { PublicFooter } from '../public-site/public-footer'
+import { PublicHeader } from '../public-site/public-header'
 
 function OrnamentalDivider() {
   return (
@@ -26,46 +29,6 @@ function OrnamentalDivider() {
       <Fleuron />
       <span className="line flip" />
     </div>
-  )
-}
-
-function LandingHeader() {
-  return (
-    <header className="d1-site-header d1-up">
-      <a className="d1-brand" href="#top" aria-label="Entheo Community home">
-        <span className="d1-brand-name">ENTHEO&nbsp;COMMUNITY</span>
-        <span className="d1-brand-meta" aria-hidden>
-          <span>Est. MMXXIII</span>
-          <span>·</span>
-          <span>Welcome Home</span>
-        </span>
-      </a>
-      <nav className="d1-chapter-nav" aria-label="Primary">
-        <div className="d1-index-links">
-          <a href="#belief">Belief</a>
-          <a href="#sacraments">Practice</a>
-          <a href="#assembly">Gather</a>
-          <a href="#path">Path</a>
-        </div>
-        <div className="d1-nav-actions">
-          <a className="d1-nav-login" href={MEMBER_LOGIN_URL}>
-            Log in
-          </a>
-          <a
-            className="d1-nav-join"
-            href={MEMBERSHIP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Join Entheo Community (opens in a new tab)"
-          >
-            <span>
-              Join<span className="d1-nav-join-us"> us</span>
-            </span>{' '}
-            <span aria-hidden>↗</span>
-          </a>
-        </div>
-      </nav>
-    </header>
   )
 }
 
@@ -92,9 +55,6 @@ function Hero() {
         />
       ))}
 
-      <div className="d1-up" style={{ animationDelay: '120ms', color: 'var(--gold)' }}>
-        <Fleuron />
-      </div>
       <p className="d1-kicker d1-up" style={{ animationDelay: '220ms' }}>
         A Nationwide Fellowship of Entheists
       </p>
@@ -107,40 +67,156 @@ function Hero() {
         The God <span className="gilt">Within</span>
       </h1>
       <p className="d1-sub d1-up" style={{ animationDelay: '460ms' }}>
-        Entheo Community is a fellowship of seekers for whom sacred plants and wild
-        places are not an escape from life — but the way home to it.
+        Entheo Community is a nationwide fellowship of individuals for whom entheogens
+        and nature immersion are part of a spiritual way of life.
       </p>
       <div className="d1-cta-row d1-up" style={{ animationDelay: '600ms' }}>
-        <WaxSeal label="JOIN US" href={MEMBERSHIP_URL} arcId="hero-seal-arc" />
-        <a className="d1-quiet-link" href="#assembly">
-          Attend the Weekly Assembly&nbsp;❧
+        <MembershipAction label="Join the community" href={MEMBERSHIP_URL} />
+        <a className="d1-quiet-link" href="#about">
+          Discover the community&nbsp;❧
         </a>
       </div>
     </section>
   )
 }
 
-function Creed() {
+function Introduction() {
+  return (
+    <section className="d1-section" id="about" aria-labelledby="about-title">
+      <header className="d1-sec-head" data-reveal>
+        <p className="d1-sec-kicker">Welcome home.</p>
+        <h2 className="d1-sec-title" id="about-title">
+          What We&apos;re Creating
+        </h2>
+      </header>
+
+      <div className="d1-introduction">
+        <figure className="d1-film-plate" data-reveal>
+          <div className="d1-film-frame">
+            <iframe
+              src={WELCOME_VIDEO_URL}
+              title="Introduction to Entheo Community"
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+          <figcaption>
+            <span>Moving plate · 00</span>
+            Introduction to Entheo Community
+          </figcaption>
+        </figure>
+
+        <article
+          className="d1-creating-copy"
+          data-reveal
+          style={cssVariables({ '--d': '120ms' })}
+        >
+          <p className="d1-creating-lede">
+            Our faith-based nonprofit was established in 2023 as a way to provide
+            greater and safer access to these sacraments within the context of sincere
+            religious exercise, supported by community and comprehensive education.
+          </p>
+          <p>
+            We identify as an{' '}
+            <a
+              href={ENTHEISM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Learn about Entheism (opens in a new tab)"
+            >
+              Entheist
+            </a>{' '}
+            community, but we welcome and embrace the gifts of all faiths.
+          </p>
+          <p>
+            We are unincorporated and remain independent of state or federal oversight.
+            We are grateful that the United States recognizes our inherent freedom as
+            free men &amp; women to teach and practice our sacraments.
+          </p>
+        </article>
+      </div>
+    </section>
+  )
+}
+
+function Beliefs() {
   return (
     <section className="d1-section" id="belief" aria-labelledby="belief-title">
-      <h2 className="d1-sr-only" id="belief-title">
-        What we believe
-      </h2>
-      <div className="d1-creed" data-reveal>
-        <aside className="d1-marginalia">
-          Entheos · ἔνθεος
-          <em>“the god within” — the root of enthusiasm</em>
+      <header className="d1-sec-head" data-reveal>
+        <p className="d1-sec-kicker">A faith of inner awareness</p>
+        <h2 className="d1-sec-title" id="belief-title">
+          Our Beliefs
+        </h2>
+      </header>
+
+      <div className="d1-belief-folio" data-reveal>
+        <p className="d1-belief-lede">
+          We believe in the existence of a transcendent and divine presence that is the
+          source of, and is manifest in, all that exists in the physical and nonphysical
+          world. It cannot be named, though we can relate to its aspects using terms such
+          as God, Source, Creator, Spirit, or Universe.
+        </p>
+        <aside className="d1-divine-names" aria-label="Names for the divine">
+          <span>God</span>
+          <span>Source</span>
+          <span>Creator</span>
+          <span>Spirit</span>
+          <span>Universe</span>
         </aside>
-        <p className="d1-creed-text">
-          We are Entheists: we hold that the divine is not housed in distant heavens
-          but seeded in every living thing, waiting patiently beneath the noise of our
-          days. To walk slowly into a forest, to take the sacrament with reverence, to
-          sit in honest stillness — these are three ways of knocking on a door that
-          opens from the inside. Founded in 2023, our fellowship now reaches across
-          the country. Whatever tradition carried you here, there is a place set for
-          you at this table.
+      </div>
+
+      <div className="d1-belief-columns">
+        <p data-reveal>
+          Spirit unconditionally loves us and guides us toward that which is in greatest
+          alignment with our highest purpose. Listening to and aligning ourselves with
+          this divine guidance brings great joy and wellbeing for ourselves, our families
+          and our communities.
+        </p>
+        <p data-reveal style={cssVariables({ '--d': '100ms' })}>
+          Divine guidance comes in various ways through our physical and nonphysical
+          senses and is clearest when we attune to the present moment by practicing
+          awareness. Our sacraments are the most effective ways we know to cultivate this
+          awareness.
         </p>
       </div>
+
+      <div className="d1-entheism-declaration" data-reveal>
+        <p className="d1-entheism-mark" aria-hidden>
+          EN · THEISM
+        </p>
+        <p>
+          This religious practice of cultivating inner awareness to connect to Source is
+          called{' '}
+          <a
+            href={ENTHEISM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Learn about Entheism (opens in a new tab)"
+          >
+            Entheism
+          </a>
+          : The belief that God is within.
+        </p>
+      </div>
+
+      <aside className="d1-belief-boundary" data-reveal aria-label="A matter of personal alignment">
+        <div className="d1-belief-fleuron" aria-hidden>
+          <Fleuron />
+        </div>
+        <p>
+          Our sacraments and beliefs are only for those who feel aligned with them; and we
+          do not attempt to persuade anyone of our beliefs or practices. Even those who
+          choose to practice with our sacraments may also choose to stop doing so at any
+          point, just as followers of any tradition or modality may choose to stop when
+          they feel they have outgrown their need for that practice.
+        </p>
+        <p>
+          However, for those of us who are seeking these practices, all of our sacraments
+          are essential parts of our ability to connect with our highest divine guidance.
+        </p>
+      </aside>
     </section>
   )
 }
@@ -153,6 +229,13 @@ function Sacraments() {
         <h2 className="d1-sec-title" id="sacraments-title">
           A Field Guide to Communion
         </h2>
+        <p className="d1-section-intro">
+          Our sacraments are the practices by which we alter and explore consciousness in
+          order to achieve a deeper awareness of our true nature. Specifically, they are:
+          (1) nature immersion, (2) communion with entheogens and similar substances, and
+          (3) other entheogenic or consciousness-altering modalities such as meditation,
+          music, breath work, and dance.
+        </p>
       </header>
       <div className="d1-plates">
         {SACRAMENT_PLATES.map((plate, index) => (
@@ -180,42 +263,50 @@ function WeeklyAssembly() {
   return (
     <section className="d1-section" id="assembly" aria-labelledby="assembly-title">
       <div className="d1-invite" data-reveal>
-        <div style={{ color: 'var(--gold)' }}>
-          <SunGlyph />
+        <figure className="d1-assembly-figure">
+          <img
+            src={ASSEMBLY_IMAGE_URL}
+            alt="People gathered in a circle in a sunlit room"
+            loading="lazy"
+          />
+          <figcaption>Fellowship · support · shared experience</figcaption>
+        </figure>
+
+        <div className="d1-invite-copy">
+          <div className="d1-invite-glyph" aria-hidden>
+            <SunGlyph />
+          </div>
+          <p className="d1-sec-kicker">You are invited</p>
+          <h2 className="d1-invite-title" id="assembly-title">
+            The Weekly Assembly
+          </h2>
+          <p className="d1-invite-when">Every Wednesday · 10:30 a.m. ET</p>
+          <p className="d1-invite-sub">
+            Newcomers as well as members come together every Wednesday 10:30am ET to
+            build meaningful relationships, share experiences, receive support, and get
+            answers to all types of questions.
+          </p>
+          <ul className="d1-invite-details" aria-label="Assembly details">
+            <li>
+              <span>Where</span>Online
+            </li>
+            <li>
+              <span>For whom</span>Newcomers &amp; members
+            </li>
+            <li>
+              <span>What to bring</span>Your questions
+            </li>
+          </ul>
+          <p className="d1-invite-action">
+            <a
+              className="d1-quiet-link"
+              href={ASSEMBLY_URL}
+              aria-label="Learn more about Weekly Assembly"
+            >
+              Weekly Assembly info &amp; RSVP <span aria-hidden>→</span>
+            </a>
+          </p>
         </div>
-        <p className="d1-sec-kicker" style={{ marginTop: '1rem' }}>
-          You are invited
-        </p>
-        <h2 className="d1-invite-title" id="assembly-title">
-          The Weekly Assembly
-        </h2>
-        <p className="d1-invite-when">Every Wednesday · Half Past Ten, Eastern</p>
-        <p className="d1-invite-sub">
-          An open circle for fellowship, shared experience & honest inquiry.
-          Newcomers are always welcome; come simply to listen, if you like.
-        </p>
-        <ul className="d1-invite-details" aria-label="Assembly details">
-          <li>
-            <span>Where</span>Online
-          </li>
-          <li>
-            <span>For whom</span>Newcomers welcome
-          </li>
-          <li>
-            <span>How to arrive</span>Come as you are
-          </li>
-        </ul>
-        <p className="d1-invite-action">
-          <a
-            className="d1-quiet-link"
-            href={ASSEMBLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Reserve your seat at the Weekly Assembly (opens in a new tab)"
-          >
-            Reserve your seat <span aria-hidden>→</span>
-          </a>
-        </p>
       </div>
     </section>
   )
@@ -227,21 +318,32 @@ function MinistryPath() {
       <header className="d1-sec-head" data-reveal>
         <p className="d1-sec-kicker">From Guest to Minister</p>
         <h2 className="d1-sec-title" id="path-title">
-          The Path of Ministry
+          Your Path to Realization
         </h2>
       </header>
       <div className="d1-path">
         <ol className="d1-steps">
-          {MINISTRY_STEPS.map(([number, title, description], index) => (
+          {MINISTRY_STEPS.map((step, index) => (
             <li
-              key={number}
+              key={step.number}
               className="d1-step"
               data-reveal
               style={cssVariables({ '--d': `${index * 90}ms` })}
             >
-              <span className="d1-step-no">{number}.</span>
-              <h3 className="d1-step-title">{title}</h3>
-              <p className="d1-step-desc">{description}</p>
+              <span className="d1-step-no">{step.number}.</span>
+              <h3 className="d1-step-title">{step.title}</h3>
+              <p className="d1-step-desc">{step.description}</p>
+              <p className="d1-step-action">
+                <a
+                  href={step.action.href}
+                  target={step.action.external ? '_blank' : undefined}
+                  rel={step.action.external ? 'noopener noreferrer' : undefined}
+                  aria-label={step.action.accessibleLabel}
+                >
+                  {step.action.label}{' '}
+                  <span aria-hidden>{step.action.external ? '↗' : '→'}</span>
+                </a>
+              </p>
             </li>
           ))}
         </ol>
@@ -253,7 +355,7 @@ function MinistryPath() {
 function Finale() {
   return (
     <section className="d1-finale" data-reveal aria-labelledby="finale-title">
-      <div style={{ color: 'var(--gold)', display: 'flex', justifyContent: 'center' }}>
+      <div className="d1-finale-fleuron" aria-hidden>
         <Fleuron />
       </div>
       <h2 className="d1-finale-words" id="finale-title">
@@ -262,7 +364,7 @@ function Finale() {
         <span className="gilt-word">welcome home.</span>
       </h2>
       <div className="d1-cta-row">
-        <WaxSeal label="BEGIN" href={MEMBERSHIP_URL} arcId="finale-seal-arc" />
+        <MembershipAction label="Become a member" href={MEMBERSHIP_URL} />
       </div>
     </section>
   )
@@ -286,23 +388,21 @@ export function LandingPage() {
       </div>
 
       <div className="d1-shell">
-        <LandingHeader />
+        <PublicHeader onLandingPage />
         <main>
           <Hero />
           <OrnamentalDivider />
-          <Creed />
+          <Introduction />
+          <Beliefs />
           <Sacraments />
           <OrnamentalDivider />
           <WeeklyAssembly />
           <MinistryPath />
+          <FaqAccordion />
           <Finale />
         </main>
 
-        <footer className="d1-colophon">
-          Entheo Community · An Unincorporated Religious Fellowship · Est. 2023
-          <br />
-          <a href="mailto:info@entheo.community">info@entheo.community</a>
-        </footer>
+        <PublicFooter />
       </div>
     </div>
   )

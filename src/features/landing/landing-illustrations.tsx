@@ -46,21 +46,66 @@ function spiral(
   return parts.join(' ')
 }
 
+type CubicStem = {
+  start: { x: number; y: number }
+  controlStart: { x: number; y: number }
+  controlEnd: { x: number; y: number }
+  end: { x: number; y: number }
+}
+
+const FERN_STEM: CubicStem = {
+  start: { x: 61, y: 252 },
+  controlStart: { x: 55, y: 200 },
+  controlEnd: { x: 65, y: 122 },
+  end: { x: 58, y: 26 },
+}
+
+const SPRIG_STEM: CubicStem = {
+  start: { x: 70, y: 192 },
+  controlStart: { x: 84, y: 150 },
+  controlEnd: { x: 56, y: 96 },
+  end: { x: 70, y: 28 },
+}
+
+function pointOnStem(stem: CubicStem, progress: number) {
+  const remaining = 1 - progress
+  const startWeight = remaining ** 3
+  const controlStartWeight = 3 * remaining ** 2 * progress
+  const controlEndWeight = 3 * remaining * progress ** 2
+  const endWeight = progress ** 3
+
+  return {
+    x:
+      stem.start.x * startWeight +
+      stem.controlStart.x * controlStartWeight +
+      stem.controlEnd.x * controlEndWeight +
+      stem.end.x * endWeight,
+    y:
+      stem.start.y * startWeight +
+      stem.controlStart.y * controlStartWeight +
+      stem.controlEnd.y * controlEndWeight +
+      stem.end.y * endWeight,
+  }
+}
+
+function stemPath(stem: CubicStem) {
+  return `M ${stem.start.x} ${stem.start.y} C ${stem.controlStart.x} ${stem.controlStart.y}, ${stem.controlEnd.x} ${stem.controlEnd.y}, ${stem.end.x} ${stem.end.y}`
+}
+
 export function Fern({ flip = false }: { flip?: boolean }) {
   const pinnae: { d: string; delay: number }[] = []
   const count = 24
 
   for (let index = 0; index < count; index++) {
     const progress = index / count
+    const stemPoint = pointOnStem(FERN_STEM, (index + 1) / (count + 1))
     const side = index % 2 === 0 ? -1 : 1
-    const y = 244 - progress * 212
-    const x = 60 + Math.sin(progress * 4.2) * 4
     const length = (1 - progress) * 44 + 8
     const lift = length * 0.32
     pinnae.push({
-      d: `M ${x} ${y} C ${x + side * length * 0.35} ${y - 2}, ${x + side * length * 0.72} ${
-        y - lift * 0.45
-      }, ${x + side * length} ${y - lift}`,
+      d: `M ${stemPoint.x} ${stemPoint.y} C ${stemPoint.x + side * length * 0.35} ${stemPoint.y - 2}, ${
+        stemPoint.x + side * length * 0.72
+      } ${stemPoint.y - lift * 0.45}, ${stemPoint.x + side * length} ${stemPoint.y - lift}`,
       delay: 300 + progress * 1100,
     })
   }
@@ -71,10 +116,21 @@ export function Fern({ flip = false }: { flip?: boolean }) {
       style={flip ? { transform: 'scaleX(-1)' } : undefined}
       aria-hidden
     >
-      <Stroke d="M 61 252 C 55 200, 65 122, 58 26" w={1.7} delay={0} />
+      <Stroke
+        d={stemPath(FERN_STEM)}
+        w={1.7}
+        delay={0}
+        data-fern-stem
+      />
       <Stroke d={spiral(58, 18, 1.6, 9, true)} w={1.3} delay={1300} />
       {pinnae.map((pinna, index) => (
-        <Stroke key={index} d={pinna.d} w={1.15} delay={pinna.delay} />
+        <Stroke
+          key={index}
+          d={pinna.d}
+          w={1.15}
+          delay={pinna.delay}
+          data-fern-pinna
+        />
       ))}
     </svg>
   )
@@ -92,10 +148,11 @@ function Sprig() {
 
   for (let index = 0; index < count; index++) {
     const progress = index / (count - 1)
+    const stemPoint = pointOnStem(SPRIG_STEM, (index + 1) / (count + 1))
     const side = index % 2 === 0 ? -1 : 1
     leaves.push({
-      x: 70 + Math.sin(progress * Math.PI * 1.7) * 9,
-      y: 182 - progress * 142,
+      x: stemPoint.x,
+      y: stemPoint.y,
       angle: side === 1 ? -34 - progress * 12 : 214 + progress * 12,
       scale: 1.05 - progress * 0.5,
       delay: 250 + progress * 900,
@@ -106,11 +163,12 @@ function Sprig() {
 
   return (
     <svg viewBox="0 0 140 200" aria-hidden>
-      <Stroke d="M 70 192 C 84 150, 56 96, 70 28" w={1.7} />
+      <Stroke d={stemPath(SPRIG_STEM)} w={1.7} data-sprig-stem />
       {leaves.map((leaf, index) => (
         <g
           key={index}
           transform={`translate(${leaf.x} ${leaf.y}) rotate(${leaf.angle}) scale(${leaf.scale})`}
+          data-sprig-leaf
         >
           <Stroke d={leafPath} w={1.15} delay={leaf.delay} />
           <Stroke d="M 2 -0.6 L 17 -2" w={0.8} delay={leaf.delay + 160} />
@@ -280,56 +338,5 @@ export function SunGlyph() {
         />
       ))}
     </svg>
-  )
-}
-
-export function WaxSeal({
-  label,
-  href,
-  arcId,
-}: {
-  label: string
-  href: string
-  arcId: string
-}) {
-  return (
-    <a
-      className="d1-seal"
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={
-        label === 'BEGIN'
-          ? 'Begin joining Entheo Community (opens in a new tab)'
-          : 'Join Entheo Community (opens in a new tab)'
-      }
-    >
-      <svg viewBox="0 0 108 108" aria-hidden>
-        <defs>
-          <path
-            id={arcId}
-            d="M 54 54 m -36 0 a 36 36 0 1 1 72 0 a 36 36 0 1 1 -72 0"
-          />
-        </defs>
-        <circle
-          cx="54"
-          cy="54"
-          r="45"
-          fill="none"
-          stroke="rgba(246,231,210,0.5)"
-          strokeWidth="1"
-          strokeDasharray="2 3"
-        />
-        <text fill="rgba(246,231,210,0.85)" fontSize="8.4" letterSpacing="2.6">
-          <textPath href={`#${arcId}`} startOffset="0">
-            ENTHEO COMMUNITY · EST MMXXIII ·
-          </textPath>
-        </text>
-      </svg>
-      <span className="d1-seal-text" aria-hidden>
-        {label}
-        <br />✦
-      </span>
-    </a>
   )
 }

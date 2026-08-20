@@ -10,6 +10,41 @@
       },
       {
         "type": "route",
+        "path": "/contact",
+        "file": "contact.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/services",
+        "file": "services.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/events",
+        "file": "events.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/sacrament-ministers",
+        "file": "sacrament-ministers.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/fellowship-ministers",
+        "file": "fellowship-ministers.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/ceremony-ministers",
+        "file": "ceremony-ministers.tsx"
+      },
+      {
+        "type": "route",
+        "path": "/$faqSlug",
+        "file": "faq-detail.tsx"
+      },
+      {
+        "type": "route",
         "path": "/members/dashboard",
         "file": "members.dashboard.tsx"
       },

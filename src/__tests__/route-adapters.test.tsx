@@ -11,6 +11,7 @@ const routeRuntime = vi.hoisted(() => {
         options,
         useLoaderData: vi.fn(),
         useSearch: vi.fn(),
+        useParams: vi.fn(),
       }),
   )
   const createRootRoute = vi.fn((options: Record<string, unknown>) => ({ options }))
@@ -30,8 +31,23 @@ vi.mock('@tanstack/react-router', async (importOriginal) => ({
 }))
 
 import { LandingPage } from '../features/landing/landing-page'
+import { ContactPage } from '../features/contact/contact-page'
+import { EventsPage } from '../features/events/events-page'
+import {
+  CeremonyMinistersPage,
+  FellowshipMinistersPage,
+  SacramentMinistersPage,
+} from '../features/ministers/ministers-page'
+import { ServicesPage } from '../features/services/services-page'
 import { Route as RootRoute } from '../routes/__root'
+import { Route as ContactRoute } from '../routes/contact'
+import { Route as EventsRoute } from '../routes/events'
+import { Route as CeremonyMinistersRoute } from '../routes/ceremony-ministers'
+import { Route as FaqDetailRoute } from '../routes/faq-detail'
+import { Route as FellowshipMinistersRoute } from '../routes/fellowship-ministers'
 import { Route as IndexRoute } from '../routes/index'
+import { Route as SacramentMinistersRoute } from '../routes/sacrament-ministers'
+import { Route as ServicesRoute } from '../routes/services'
 import { Route as DashboardRoute } from '../routes/members.dashboard'
 import { Route as ErrorRoute } from '../routes/members.error'
 import { Route as ResourcesRoute } from '../routes/members.resources'
@@ -41,7 +57,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-interface RuntimeRoute<TLoaderData = unknown, TSearch = unknown> {
+interface RuntimeRoute<TLoaderData = unknown, TSearch = unknown, TParams = unknown> {
   options: {
     loader?: () => Promise<TLoaderData>
     validateSearch?: (search: Record<string, unknown>) => TSearch
@@ -49,24 +65,60 @@ interface RuntimeRoute<TLoaderData = unknown, TSearch = unknown> {
   }
   useLoaderData: ReturnType<typeof vi.fn<() => TLoaderData>>
   useSearch: ReturnType<typeof vi.fn<() => TSearch>>
+  useParams: ReturnType<typeof vi.fn<() => TParams>>
 }
 
-function runtimeRoute<TLoaderData = unknown, TSearch = unknown>(route: unknown) {
-  return route as RuntimeRoute<TLoaderData, TSearch>
+function runtimeRoute<TLoaderData = unknown, TSearch = unknown, TParams = unknown>(route: unknown) {
+  return route as RuntimeRoute<TLoaderData, TSearch, TParams>
 }
 
 describe('TanStack route adapters', () => {
   it('wires the root outlet and landing component to their file routes', () => {
     const root = runtimeRoute(RootRoute)
+    const contact = runtimeRoute(ContactRoute)
+    const events = runtimeRoute(EventsRoute)
+    const ceremonyMinisters = runtimeRoute(CeremonyMinistersRoute)
+    const fellowshipMinisters = runtimeRoute(FellowshipMinistersRoute)
     const index = runtimeRoute(IndexRoute)
+    const sacramentMinisters = runtimeRoute(SacramentMinistersRoute)
+    const services = runtimeRoute(ServicesRoute)
     const RootComponent = root.options.component
 
     render(<RootComponent />)
 
     expect(routeRuntime.Outlet).toHaveBeenCalledOnce()
     expect(index.options.component).toBe(LandingPage)
+    expect(contact.options.component).toBe(ContactPage)
+    expect(events.options.component).toBe(EventsPage)
+    expect(ceremonyMinisters.options.component).toBe(CeremonyMinistersPage)
+    expect(fellowshipMinisters.options.component).toBe(FellowshipMinistersPage)
+    expect(sacramentMinisters.options.component).toBe(SacramentMinistersPage)
+    expect(services.options.component).toBe(ServicesPage)
     expect(routeRuntime.createRootRoute).toHaveBeenCalledOnce()
     expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/')
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/contact')
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/events')
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/services')
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/sacrament-ministers')
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/fellowship-ministers')
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/ceremony-ministers')
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/$faqSlug')
+  })
+
+  it('renders FAQ folios through the short-slug route boundary', () => {
+    const faqRoute = runtimeRoute<unknown, unknown, { faqSlug: string }>(FaqDetailRoute)
+    faqRoute.useParams.mockReturnValue({ faqSlug: 'sourcing' })
+    const FaqComponent = faqRoute.options.component
+
+    render(<FaqComponent />)
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: "How is Entheo Community's Sacrament Sourced?",
+      }),
+    ).toBeTruthy()
+    expect(routeRuntime.createFileRoute).toHaveBeenCalledWith('/$faqSlug')
   })
 
   it('loads and renders the dashboard through the route boundary', async () => {

@@ -1,0 +1,5 @@
+export const SIGNAL_URL = 'https://www.signal.org/'
+export const SIGNAL_HANDLE = '@entheo.111'
+export const CONTACT_EMAIL = 'info@entheo.community'
+export const CONTACT_PHONE_DISPLAY = '404-954-0420'
+export const CONTACT_PHONE_HREF = 'tel:+14049540420'

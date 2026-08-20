@@ -1,4 +1,6 @@
 export const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'
+export const DONATION_URL =
+  'https://www.zeffy.com/en-US/organizations/entheo-community'
 export const MEMBER_DASHBOARD_PATH = '/members/dashboard'
 export const MEMBER_RESOURCES_PATH = '/members/resources'
 

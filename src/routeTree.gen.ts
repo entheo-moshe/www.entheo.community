@@ -9,11 +9,53 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as servicesRouteImport } from './routes/services'
+import { Route as sacramentMinistersRouteImport } from './routes/sacrament-ministers'
+import { Route as fellowshipMinistersRouteImport } from './routes/fellowship-ministers'
+import { Route as eventsRouteImport } from './routes/events'
+import { Route as contactRouteImport } from './routes/contact'
+import { Route as ceremonyMinistersRouteImport } from './routes/ceremony-ministers'
+import { Route as faqDetailRouteImport } from './routes/faq-detail'
 import { Route as indexRouteImport } from './routes/index'
 import { Route as membersDotresourcesRouteImport } from './routes/members.resources'
 import { Route as membersDoterrorRouteImport } from './routes/members.error'
 import { Route as membersDotdashboardRouteImport } from './routes/members.dashboard'
 
+const servicesRoute = servicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const sacramentMinistersRoute = sacramentMinistersRouteImport.update({
+  id: '/sacrament-ministers',
+  path: '/sacrament-ministers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const fellowshipMinistersRoute = fellowshipMinistersRouteImport.update({
+  id: '/fellowship-ministers',
+  path: '/fellowship-ministers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const eventsRoute = eventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const contactRoute = contactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ceremonyMinistersRoute = ceremonyMinistersRouteImport.update({
+  id: '/ceremony-ministers',
+  path: '/ceremony-ministers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const faqDetailRoute = faqDetailRouteImport.update({
+  id: '/$faqSlug',
+  path: '/$faqSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const indexRoute = indexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +79,26 @@ const membersDotdashboardRoute = membersDotdashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof indexRoute
+  '/$faqSlug': typeof faqDetailRoute
+  '/ceremony-ministers': typeof ceremonyMinistersRoute
+  '/contact': typeof contactRoute
+  '/events': typeof eventsRoute
+  '/fellowship-ministers': typeof fellowshipMinistersRoute
+  '/sacrament-ministers': typeof sacramentMinistersRoute
+  '/services': typeof servicesRoute
   '/members/dashboard': typeof membersDotdashboardRoute
   '/members/error': typeof membersDoterrorRoute
   '/members/resources': typeof membersDotresourcesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof indexRoute
+  '/$faqSlug': typeof faqDetailRoute
+  '/ceremony-ministers': typeof ceremonyMinistersRoute
+  '/contact': typeof contactRoute
+  '/events': typeof eventsRoute
+  '/fellowship-ministers': typeof fellowshipMinistersRoute
+  '/sacrament-ministers': typeof sacramentMinistersRoute
+  '/services': typeof servicesRoute
   '/members/dashboard': typeof membersDotdashboardRoute
   '/members/error': typeof membersDoterrorRoute
   '/members/resources': typeof membersDotresourcesRoute
@@ -50,6 +106,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof indexRoute
+  '/$faqSlug': typeof faqDetailRoute
+  '/ceremony-ministers': typeof ceremonyMinistersRoute
+  '/contact': typeof contactRoute
+  '/events': typeof eventsRoute
+  '/fellowship-ministers': typeof fellowshipMinistersRoute
+  '/sacrament-ministers': typeof sacramentMinistersRoute
+  '/services': typeof servicesRoute
   '/members/dashboard': typeof membersDotdashboardRoute
   '/members/error': typeof membersDoterrorRoute
   '/members/resources': typeof membersDotresourcesRoute
@@ -58,14 +121,39 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$faqSlug'
+    | '/ceremony-ministers'
+    | '/contact'
+    | '/events'
+    | '/fellowship-ministers'
+    | '/sacrament-ministers'
+    | '/services'
     | '/members/dashboard'
     | '/members/error'
     | '/members/resources'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/members/dashboard' | '/members/error' | '/members/resources'
+  to:
+    | '/'
+    | '/$faqSlug'
+    | '/ceremony-ministers'
+    | '/contact'
+    | '/events'
+    | '/fellowship-ministers'
+    | '/sacrament-ministers'
+    | '/services'
+    | '/members/dashboard'
+    | '/members/error'
+    | '/members/resources'
   id:
     | '__root__'
     | '/'
+    | '/$faqSlug'
+    | '/ceremony-ministers'
+    | '/contact'
+    | '/events'
+    | '/fellowship-ministers'
+    | '/sacrament-ministers'
+    | '/services'
     | '/members/dashboard'
     | '/members/error'
     | '/members/resources'
@@ -73,6 +161,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   indexRoute: typeof indexRoute
+  faqDetailRoute: typeof faqDetailRoute
+  ceremonyMinistersRoute: typeof ceremonyMinistersRoute
+  contactRoute: typeof contactRoute
+  eventsRoute: typeof eventsRoute
+  fellowshipMinistersRoute: typeof fellowshipMinistersRoute
+  sacramentMinistersRoute: typeof sacramentMinistersRoute
+  servicesRoute: typeof servicesRoute
   membersDotdashboardRoute: typeof membersDotdashboardRoute
   membersDoterrorRoute: typeof membersDoterrorRoute
   membersDotresourcesRoute: typeof membersDotresourcesRoute
@@ -80,6 +175,55 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof servicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sacrament-ministers': {
+      id: '/sacrament-ministers'
+      path: '/sacrament-ministers'
+      fullPath: '/sacrament-ministers'
+      preLoaderRoute: typeof sacramentMinistersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fellowship-ministers': {
+      id: '/fellowship-ministers'
+      path: '/fellowship-ministers'
+      fullPath: '/fellowship-ministers'
+      preLoaderRoute: typeof fellowshipMinistersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof eventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof contactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ceremony-ministers': {
+      id: '/ceremony-ministers'
+      path: '/ceremony-ministers'
+      fullPath: '/ceremony-ministers'
+      preLoaderRoute: typeof ceremonyMinistersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$faqSlug': {
+      id: '/$faqSlug'
+      path: '/$faqSlug'
+      fullPath: '/$faqSlug'
+      preLoaderRoute: typeof faqDetailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -113,6 +257,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   indexRoute: indexRoute,
+  faqDetailRoute: faqDetailRoute,
+  ceremonyMinistersRoute: ceremonyMinistersRoute,
+  contactRoute: contactRoute,
+  eventsRoute: eventsRoute,
+  fellowshipMinistersRoute: fellowshipMinistersRoute,
+  sacramentMinistersRoute: sacramentMinistersRoute,
+  servicesRoute: servicesRoute,
   membersDotdashboardRoute: membersDotdashboardRoute,
   membersDoterrorRoute: membersDoterrorRoute,
   membersDotresourcesRoute: membersDotresourcesRoute,
