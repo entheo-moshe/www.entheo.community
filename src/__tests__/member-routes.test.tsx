@@ -18,17 +18,15 @@ import {
 } from '../features/members/member-session'
 import type { FetchImplementation } from '../features/members/member-client'
 import {
-  MemberDashboard,
-  resolveDashboardAccess,
-} from '../routes/members.dashboard'
+  loadMemberDashboard as resolveDashboardAccess,
+  loadMemberResources as resolveMemberResourcesAccess,
+} from '../features/members/member-access'
+import { MemberDashboard } from '../features/members/member-dashboard-page'
 import {
   MemberErrorPage,
   normalizeMemberErrorReason,
-} from '../routes/members.error'
-import {
-  MemberResources,
-  resolveMemberResourcesAccess,
-} from '../routes/members.resources'
+} from '../features/members/member-error-page'
+import { MemberResources } from '../features/members/member-resources-page'
 
 afterEach(() => cleanup())
 

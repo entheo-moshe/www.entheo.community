@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { MEMBER_RESOURCES_PATH } from '../config/member-navigation'
-import '../designs/members.css'
+import { MEMBER_RESOURCES_PATH } from '../../config/member-navigation'
+import '../../designs/members.css'
 
 type MemberFolioSection = 'dashboard' | 'resources'
 
