@@ -26,7 +26,7 @@ import {
 import {
   decideMemberAccess,
   findMembersByEmail,
-  type MemberRecord,
+  type FindMembersByEmail,
 } from './_shared/member-directory'
 import {
   openOAuthFlow,
@@ -41,11 +41,6 @@ type ExchangeGoogleCode = (
   flow: OAuthFlowClaims,
   configuration: GoogleConfiguration,
 ) => Promise<GoogleIdentity>
-
-type FindMembersByEmail = (
-  email: string,
-  apiToken: string,
-) => Promise<MemberRecord[]>
 
 function failedCallbackResponse(request: Request, reason: 'auth' | 'service') {
   return redirectResponse(`${ERROR_PATH}?reason=${reason}`, [

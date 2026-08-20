@@ -1,21 +1,13 @@
 import type { Config } from '@netlify/functions'
 import { MEMBER_RESOURCES } from './_shared/member-resources'
-import { jsonResponse, methodNotAllowed } from './_shared/http'
-import { createMembersSessionHandler } from './members-session'
-
-type FindMembersByEmail = Parameters<typeof createMembersSessionHandler>[0]
+import type { FindMembersByEmail } from './_shared/member-directory'
+import { createProtectedMemberHandler } from './_shared/protected-member-handler'
 
 export function createMemberResourcesHandler(findMembers?: FindMembersByEmail) {
-  const authorizeMember = createMembersSessionHandler(findMembers)
-
-  return async function memberResourcesHandler(request: Request) {
-    if (request.method !== 'GET') return methodNotAllowed(['GET'])
-
-    const accessResponse = await authorizeMember(request)
-    if (accessResponse.status !== 200) return accessResponse
-
-    return jsonResponse({ resources: MEMBER_RESOURCES }, 200)
-  }
+  return createProtectedMemberHandler(
+    () => ({ resources: MEMBER_RESOURCES }),
+    findMembers,
+  )
 }
 
 export default createMemberResourcesHandler()

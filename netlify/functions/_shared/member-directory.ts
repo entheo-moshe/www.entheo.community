@@ -21,6 +21,11 @@ export interface MemberRecord {
   membershipStatus: string | null
 }
 
+export type FindMembersByEmail = (
+  email: string,
+  apiToken: string,
+) => Promise<MemberRecord[]>
+
 export type MemberAccessDecision =
   | {
       kind: 'active'
