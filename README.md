@@ -61,7 +61,9 @@ npm run preview
 
 - `src/routes/` — thin TanStack Router adapters for public and member routes
 - `src/features/landing/` — public landing-page composition, content, and SVG illustrations
+- `src/features/members/` — fail-closed member API contracts, validation, and access policy
+- `src/config/member-navigation.ts` — public member paths and login destinations
 - `netlify/functions/` — server-only Google authentication and Airtable authorization
 - `src/designs/` — the public folio, member header, and private member visual systems
-- `src/lib/` — page behavior and the minimized member-session client boundary
+- `src/lib/` — shared page behavior and typed style helpers
 - `tsr.config.json` — the explicit TanStack virtual route configuration

@@ -1,5 +1,8 @@
 import { useReveal, useTitle } from '../../lib/hooks'
-import { MEMBER_LOGIN_URL, MEMBERSHIP_URL } from '../../lib/member-session'
+import {
+  MEMBER_LOGIN_URL,
+  MEMBERSHIP_URL,
+} from '../../config/member-navigation'
 import { cssVariables } from '../../lib/css'
 import {
   ASSEMBLY_URL,

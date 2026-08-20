@@ -1,42 +1,26 @@
 import { useState } from 'react'
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { MemberFolio } from '../components/member-folio'
 import {
   MEMBER_LOGIN_URL,
   MEMBER_RESOURCES_PATH,
-  MEMBERSHIP_URL,
+} from '../config/member-navigation'
+import { requireActiveMemberData } from '../features/members/member-access'
+import {
   getMemberSession,
   logoutMember,
   type DashboardMember,
-  type FetchImplementation,
-} from '../lib/member-session'
+} from '../features/members/member-session'
+import type { FetchImplementation } from '../features/members/member-client'
 import { useTitle } from '../lib/hooks'
 
 export async function resolveDashboardAccess(
   fetchImplementation: FetchImplementation,
 ) {
-  const outcome = await getMemberSession(fetchImplementation)
-
-  if (outcome.kind === 'active') return outcome.member
-  if (outcome.kind === 'unauthenticated') {
-    throw redirect({ href: MEMBER_LOGIN_URL, reloadDocument: true })
-  }
-  if (outcome.kind === 'inactive') {
-    throw redirect({
-      to: '/members/error',
-      search: { reason: 'inactive' },
-      replace: true,
-    })
-  }
-  if (outcome.kind === 'not-member') {
-    throw redirect({ href: MEMBERSHIP_URL, reloadDocument: true })
-  }
-
-  throw redirect({
-    to: '/members/error',
-    search: { reason: 'service' },
-    replace: true,
-  })
+  return requireActiveMemberData(
+    await getMemberSession(fetchImplementation),
+    MEMBER_LOGIN_URL,
+  )
 }
 
 export const Route = createFileRoute('/members/dashboard')({

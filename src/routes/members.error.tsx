@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { MemberFolio } from '../components/member-folio'
-import { MEMBER_LOGIN_URL } from '../lib/member-session'
+import { MEMBER_LOGIN_URL } from '../config/member-navigation'
 import { useTitle } from '../lib/hooks'
 
 export type MemberErrorReason = 'inactive' | 'auth' | 'service'

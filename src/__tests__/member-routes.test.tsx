@@ -6,15 +6,17 @@ import { isRedirect, type AnyRedirect } from '@tanstack/react-router'
 import {
   getMemberResources,
   type MemberResource,
-} from '../lib/member-resources'
+} from '../features/members/member-resources'
 import {
   MEMBER_LOGIN_URL,
   MEMBER_RESOURCES_LOGIN_URL,
   MEMBERSHIP_URL,
+} from '../config/member-navigation'
+import {
   getMemberSession,
   logoutMember,
-  type FetchImplementation,
-} from '../lib/member-session'
+} from '../features/members/member-session'
+import type { FetchImplementation } from '../features/members/member-client'
 import {
   MemberDashboard,
   resolveDashboardAccess,
@@ -129,7 +131,7 @@ describe('member session client boundary', () => {
 
     expect(outcome).toEqual({
       kind: 'active',
-      member: { displayName: 'Miriam', membershipStatus: 'Active & Current' },
+      data: { displayName: 'Miriam', membershipStatus: 'Active & Current' },
     })
     expect(JSON.stringify(outcome)).not.toContain('must-not-reach-the-page@example.com')
     expect(JSON.stringify(outcome)).not.toContain('Private')
@@ -198,7 +200,7 @@ describe('member resources client boundary', () => {
 
     await expect(getMemberResources(fetchImplementation)).resolves.toEqual({
       kind: 'active',
-      resources: MEMBER_RESOURCES_FIXTURE,
+      data: MEMBER_RESOURCES_FIXTURE,
     })
     expect(capturedInput).toBe('/api/members/resources')
     expect(capturedInit).toEqual({

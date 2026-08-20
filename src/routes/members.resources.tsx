@@ -1,44 +1,26 @@
 import type { ReactNode } from 'react'
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { MemberFolio } from '../components/member-folio'
 import { useTitle } from '../lib/hooks'
 import {
   getMemberResources,
   type MemberResource,
   type MemberResourceId,
-} from '../lib/member-resources'
+} from '../features/members/member-resources'
 import {
   MEMBER_DASHBOARD_PATH,
   MEMBER_RESOURCES_LOGIN_URL,
-  MEMBERSHIP_URL,
-  type FetchImplementation,
-} from '../lib/member-session'
+} from '../config/member-navigation'
+import { requireActiveMemberData } from '../features/members/member-access'
+import type { FetchImplementation } from '../features/members/member-client'
 
 export async function resolveMemberResourcesAccess(
   fetchImplementation: FetchImplementation,
 ) {
-  const outcome = await getMemberResources(fetchImplementation)
-
-  if (outcome.kind === 'active') return outcome.resources
-  if (outcome.kind === 'unauthenticated') {
-    throw redirect({ href: MEMBER_RESOURCES_LOGIN_URL, reloadDocument: true })
-  }
-  if (outcome.kind === 'inactive') {
-    throw redirect({
-      to: '/members/error',
-      search: { reason: 'inactive' },
-      replace: true,
-    })
-  }
-  if (outcome.kind === 'not-member') {
-    throw redirect({ href: MEMBERSHIP_URL, reloadDocument: true })
-  }
-
-  throw redirect({
-    to: '/members/error',
-    search: { reason: 'service' },
-    replace: true,
-  })
+  return requireActiveMemberData(
+    await getMemberResources(fetchImplementation),
+    MEMBER_RESOURCES_LOGIN_URL,
+  )
 }
 
 export const Route = createFileRoute('/members/resources')({
