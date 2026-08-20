@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, render, screen, within } from '@testing-library/react'
-import { LandingPage } from '../routes/1'
+import { LandingPage } from '../features/landing/landing-page'
 import { MEMBER_LOGIN_URL } from '../lib/member-session'
 
 const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'

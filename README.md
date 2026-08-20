@@ -59,8 +59,8 @@ npm run preview
 
 ## Structure
 
-- `src/routes/1.tsx` — the public landing page mounted at `/`
-- `src/routes/members.*.tsx` — the protected dashboard and member error screens
+- `src/routes/` — thin TanStack Router adapters for public and member routes
+- `src/features/landing/` — public landing-page composition, content, and SVG illustrations
 - `netlify/functions/` — server-only Google authentication and Airtable authorization
 - `src/designs/` — the public folio, member header, and private member visual systems
 - `src/lib/` — page behavior and the minimized member-session client boundary

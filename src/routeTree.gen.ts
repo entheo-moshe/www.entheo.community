@@ -9,12 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as R1RouteImport } from './routes/1'
+import { Route as indexRouteImport } from './routes/index'
 import { Route as membersDotresourcesRouteImport } from './routes/members.resources'
 import { Route as membersDoterrorRouteImport } from './routes/members.error'
 import { Route as membersDotdashboardRouteImport } from './routes/members.dashboard'
 
-const R1Route = R1RouteImport.update({
+const indexRoute = indexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
@@ -36,20 +36,20 @@ const membersDotdashboardRoute = membersDotdashboardRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof R1Route
+  '/': typeof indexRoute
   '/members/dashboard': typeof membersDotdashboardRoute
   '/members/error': typeof membersDoterrorRoute
   '/members/resources': typeof membersDotresourcesRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof R1Route
+  '/': typeof indexRoute
   '/members/dashboard': typeof membersDotdashboardRoute
   '/members/error': typeof membersDoterrorRoute
   '/members/resources': typeof membersDotresourcesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof R1Route
+  '/': typeof indexRoute
   '/members/dashboard': typeof membersDotdashboardRoute
   '/members/error': typeof membersDoterrorRoute
   '/members/resources': typeof membersDotresourcesRoute
@@ -72,7 +72,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  R1Route: typeof R1Route
+  indexRoute: typeof indexRoute
   membersDotdashboardRoute: typeof membersDotdashboardRoute
   membersDoterrorRoute: typeof membersDoterrorRoute
   membersDotresourcesRoute: typeof membersDotresourcesRoute
@@ -84,7 +84,7 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof R1RouteImport
+      preLoaderRoute: typeof indexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/members/resources': {
@@ -112,7 +112,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  R1Route: R1Route,
+  indexRoute: indexRoute,
   membersDotdashboardRoute: membersDotdashboardRoute,
   membersDoterrorRoute: membersDoterrorRoute,
   membersDotresourcesRoute: membersDotresourcesRoute,

@@ -6,7 +6,7 @@
     "children": [
       {
         "type": "index",
-        "file": "1.tsx"
+        "file": "index.tsx"
       },
       {
         "type": "route",
