@@ -57,6 +57,22 @@ npm run build:netlify
 npm run preview
 ```
 
+## Tests
+
+```bash
+npm exec playwright install chromium
+npm test
+npm run test:coverage
+npm run test:e2e
+npm run test:all
+```
+
+Coverage measures all authored client and Netlify Function runtime TypeScript;
+configuration behavior is covered by contract tests because Vitest excludes its
+own configuration files from instrumentation. The browser suite builds the
+production client and exercises both desktop and mobile Chromium journeys on
+`http://127.0.0.1:30003`.
+
 ## Structure
 
 - `src/routes/` — thin TanStack Router adapters for public and member routes
