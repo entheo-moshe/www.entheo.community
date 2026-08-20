@@ -67,10 +67,12 @@ npm run test:e2e
 npm run test:all
 ```
 
-Coverage measures all authored client and Netlify Function runtime TypeScript;
-configuration behavior is covered by contract tests because Vitest excludes its
-own configuration files from instrumentation. The browser suite builds the
-production client and exercises both desktop and mobile Chromium journeys on
+Coverage measures all authored client and Netlify Function runtime TypeScript and
+enforces 100% statements, branches, functions, and lines. Configuration behavior
+is covered by contract tests because Vitest excludes its own configuration files
+from instrumentation. Build-only Vite transforms are exercised by the browser
+suite instead of being counted as authored unit-test branches. That suite builds
+the production client and exercises both desktop and mobile Chromium journeys on
 `http://127.0.0.1:30003`.
 
 ## Structure

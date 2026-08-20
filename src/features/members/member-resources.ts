@@ -90,7 +90,6 @@ function parseResources(value: unknown) {
   if (resources.length !== RESOURCE_IDS.size || ids.size !== RESOURCE_IDS.size) {
     return null
   }
-  if ([...RESOURCE_IDS].some((id) => !ids.has(id))) return null
 
   return resources
 }

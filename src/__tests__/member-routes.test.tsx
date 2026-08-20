@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
-import { afterEach, describe, expect, it } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { isRedirect, type AnyRedirect } from '@tanstack/react-router'
 import {
   getMemberResources,
@@ -27,8 +27,13 @@ import {
   normalizeMemberErrorReason,
 } from '../features/members/member-error-page'
 import { MemberResources } from '../features/members/member-resources-page'
+import { record, sanitizedText } from '../features/members/member-validation'
 
-afterEach(() => cleanup())
+afterEach(() => {
+  cleanup()
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
+})
 
 function response(status: number, body?: unknown) {
   return body === undefined
@@ -161,6 +166,10 @@ describe('member session client boundary', () => {
         throw new Error('network unavailable')
       }),
     ).resolves.toEqual({ kind: 'service-error' })
+
+    await expect(
+      getMemberSession(fetchResponse(new Response('{', { status: 200 }))),
+    ).resolves.toEqual({ kind: 'service-error' })
   })
 
   it('posts logout with same-origin credentials and the explicit intent header', async () => {
@@ -183,6 +192,11 @@ describe('member session client boundary', () => {
       },
     })
     await expect(logoutMember(fetchResponse(response(403)))).resolves.toBe(false)
+    await expect(
+      logoutMember(async () => {
+        throw new Error('network unavailable')
+      }),
+    ).resolves.toBe(false)
   })
 })
 
@@ -212,10 +226,22 @@ describe('member resources client boundary', () => {
   it('fails closed for malformed catalogs, insecure links, and network errors', async () => {
     const insecureFixture = structuredClone(MEMBER_RESOURCES_FIXTURE)
     insecureFixture[0].actions[0].href = 'http://example.com/not-secure'
+    const invalidUrlFixture = structuredClone(MEMBER_RESOURCES_FIXTURE)
+    invalidUrlFixture[0].actions[0].href = 'not a valid URL'
+    const emptyUrlFixture = structuredClone(MEMBER_RESOURCES_FIXTURE)
+    emptyUrlFixture[0].actions[0].href = '   '
+    const invalidDescriptionFixture = structuredClone(MEMBER_RESOURCES_FIXTURE)
+    invalidDescriptionFixture[0].description[0] = {
+      text: 'Description',
+      emphasis: 'yes' as unknown as boolean,
+    }
 
     for (const body of [
       { resources: MEMBER_RESOURCES_FIXTURE.slice(0, 2) },
       { resources: insecureFixture },
+      { resources: invalidUrlFixture },
+      { resources: emptyUrlFixture },
+      { resources: invalidDescriptionFixture },
       { resources: [{ id: 'unknown' }] },
     ]) {
       await expect(
@@ -228,6 +254,13 @@ describe('member resources client boundary', () => {
         throw new Error('network unavailable')
       }),
     ).resolves.toEqual({ kind: 'service-error' })
+  })
+})
+
+describe('member payload validation primitives', () => {
+  it('rejects arrays as records and control-only text as empty', () => {
+    expect(record([])).toBeNull()
+    expect(sanitizedText('\u0000\u001f ')).toBeNull()
   })
 })
 
@@ -343,6 +376,67 @@ describe('member route presentation', () => {
     expect(screen.getByRole('button', { name: 'Log out' })).toBeTruthy()
     expect(container.textContent).not.toContain('@')
     expect(container.querySelectorAll('main')).toHaveLength(1)
+  })
+
+  it('keeps logout recoverable when the server refuses the request', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => response(503)))
+    render(
+      <MemberDashboard
+        member={{ displayName: 'Miriam', membershipStatus: 'Active & Current' }}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Log out' }))
+
+    expect((await screen.findByRole('status')).textContent).toBe(
+      'We could not log you out. Please try again.',
+    )
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Log out' }).hasAttribute('disabled')).toBe(false),
+    )
+  })
+
+  it('does not issue a second logout while the first request is pending', async () => {
+    let completeLogout: ((response: Response) => void) | undefined
+    const fetchImplementation = vi.fn(
+      async () =>
+        new Promise<Response>((resolve) => {
+          completeLogout = resolve
+        }),
+    )
+    vi.stubGlobal('fetch', fetchImplementation)
+    render(
+      <MemberDashboard
+        member={{ displayName: 'Miriam', membershipStatus: 'Active & Current' }}
+      />,
+    )
+
+    const button = screen.getByRole('button', { name: 'Log out' })
+    fireEvent.click(button)
+    const pendingButton = await screen.findByRole('button', { name: /Logging out/ })
+    pendingButton.removeAttribute('disabled')
+    fireEvent.click(pendingButton)
+
+    expect(fetchImplementation).toHaveBeenCalledOnce()
+    completeLogout?.(response(503))
+    expect(await screen.findByRole('status')).toBeTruthy()
+  })
+
+  it('returns home after a successful logout', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const fetchImplementation = vi.fn(async () => response(204))
+    vi.stubGlobal('fetch', fetchImplementation)
+    render(
+      <MemberDashboard
+        member={{ displayName: 'Miriam', membershipStatus: 'Active & Current' }}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Log out' }))
+
+    await waitFor(() => expect(fetchImplementation).toHaveBeenCalledOnce())
+    await new Promise((resolve) => window.setTimeout(resolve, 0))
+    expect(screen.queryByRole('status')).toBeNull()
   })
 
   it('recreates every member resource with its verified destination', () => {

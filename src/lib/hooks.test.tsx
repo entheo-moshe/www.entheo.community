@@ -20,6 +20,11 @@ function RevealFixture() {
   return <div data-reveal>Revealed content</div>
 }
 
+function EmptyRevealFixture() {
+  useReveal()
+  return null
+}
+
 function mediaQuery(matches: boolean) {
   return {
     matches,
@@ -52,6 +57,58 @@ describe('page hooks', () => {
 
     expect(getByText('Revealed content').classList.contains('is-seen')).toBe(true)
     expect(observer).not.toHaveBeenCalled()
+  })
+
+  it('does nothing when the page has no reveal targets', () => {
+    const observer = vi.fn()
+    vi.stubGlobal('IntersectionObserver', observer)
+
+    render(<EmptyRevealFixture />)
+
+    expect(observer).not.toHaveBeenCalled()
+  })
+
+  it('reveals intersecting targets once and leaves offscreen targets observed', () => {
+    vi.useFakeTimers()
+    vi.stubGlobal('matchMedia', vi.fn(() => mediaQuery(false)))
+
+    let callback: IntersectionObserverCallback | undefined
+    const unobserve = vi.fn()
+    const disconnect = vi.fn()
+
+    class ReportingIntersectionObserver {
+      readonly root = null
+      readonly rootMargin = ''
+      readonly thresholds = [0.1]
+      observe = vi.fn()
+      unobserve = unobserve
+      disconnect = disconnect
+      takeRecords = vi.fn(() => [])
+
+      constructor(nextCallback: IntersectionObserverCallback) {
+        callback = nextCallback
+      }
+    }
+
+    vi.stubGlobal('IntersectionObserver', ReportingIntersectionObserver)
+    const view = render(<RevealFixture />)
+    const content = view.getByText('Revealed content')
+
+    act(() => {
+      callback?.(
+        [
+          { isIntersecting: false, target: content },
+          { isIntersecting: true, target: content },
+        ] as unknown as IntersectionObserverEntry[],
+        {} as IntersectionObserver,
+      )
+    })
+
+    expect(content.classList.contains('is-seen')).toBe(true)
+    expect(unobserve).toHaveBeenCalledOnce()
+
+    view.unmount()
+    expect(disconnect).toHaveBeenCalledOnce()
   })
 
   it('uses the safety fallback when an observer never reports an intersection', () => {

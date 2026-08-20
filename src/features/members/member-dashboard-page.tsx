@@ -13,7 +13,6 @@ export function MemberDashboard({ member }: { member: DashboardMember }) {
   useTitle(`Welcome home, ${member.displayName} — Entheo Community`)
 
   async function handleLogout() {
-    if (isLoggingOut) return
     setIsLoggingOut(true)
     setLogoutError(false)
 
