@@ -1,4 +1,3 @@
-export const PRODUCTION_ORIGIN = 'https://www.entheo.community'
 export const LOCAL_AUTH_ORIGIN = 'http://localhost:8888'
 export const MEMBERSHIP_URL = 'https://forms.gle/pKi3Mt8LB2jjfWrLA'
 export const DASHBOARD_PATH = '/members/dashboard'
@@ -32,8 +31,25 @@ export function isLocalRequest(request: Request) {
   return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]'
 }
 
+function getDeploymentOrigin() {
+  const configured = requiredEnvironment('URL')
+  let url: URL
+
+  try {
+    url = new URL(configured)
+  } catch {
+    throw new ConfigurationError('URL must be a valid HTTPS origin')
+  }
+
+  if (url.protocol !== 'https:' || url.href !== `${url.origin}/`) {
+    throw new ConfigurationError('URL must be a valid HTTPS origin')
+  }
+
+  return url.origin
+}
+
 export function getAuthOrigin(request: Request) {
-  return isLocalRequest(request) ? LOCAL_AUTH_ORIGIN : PRODUCTION_ORIGIN
+  return isLocalRequest(request) ? LOCAL_AUTH_ORIGIN : getDeploymentOrigin()
 }
 
 export function getGoogleConfiguration(request: Request) {
@@ -77,7 +93,8 @@ export function getCanonicalAuthRedirect(request: Request) {
   if (isLocalRequest(request)) return null
 
   const url = new URL(request.url)
-  if (url.origin === PRODUCTION_ORIGIN) return null
+  const authOrigin = getAuthOrigin(request)
+  if (url.origin === authOrigin) return null
 
-  return new URL(`${url.pathname}${url.search}`, PRODUCTION_ORIGIN).toString()
+  return new URL(`${url.pathname}${url.search}`, authOrigin).toString()
 }

@@ -4,10 +4,10 @@ import {
   DASHBOARD_PATH,
   DEVELOPMENT_SECRET_SENTINEL,
   LOCAL_AUTH_ORIGIN,
-  PRODUCTION_ORIGIN,
   ConfigurationError,
   getAuthOrigin,
   getCanonicalAuthRedirect,
+  getGoogleConfiguration,
   getSessionSecret,
   isLocalRequest,
 } from '../functions/_shared/config'
@@ -48,6 +48,8 @@ import { createMembersSessionHandler } from '../functions/members-session'
 
 const TEST_SECRET = 'test-session-secret-with-at-least-thirty-two-characters'
 const NOW = new Date('2026-08-20T12:00:00.000Z')
+const PRODUCTION_ORIGIN = 'https://www.entheo.community'
+const STAGING_ORIGIN = 'https://ecstaging.netlify.app'
 const configuration: GoogleConfiguration = {
   clientId: 'google-client-id',
   clientSecret: 'google-client-secret',
@@ -94,6 +96,7 @@ beforeEach(() => {
   vi.stubEnv('GOOGLE_OAUTH_CLIENT_ID', configuration.clientId)
   vi.stubEnv('GOOGLE_OAUTH_CLIENT_SECRET', configuration.clientSecret)
   vi.stubEnv('AIRTABLE_API_TOKEN', 'airtable-token-for-tests')
+  vi.stubEnv('URL', PRODUCTION_ORIGIN)
 })
 
 afterEach(() => {
@@ -102,12 +105,39 @@ afterEach(() => {
 })
 
 describe('deployment configuration edges', () => {
-  it('recognizes every loopback form and selects the canonical production origin otherwise', () => {
+  it('recognizes every loopback form and selects the configured deployment origin otherwise', () => {
     expect(isLocalRequest(request('http://localhost:8888', '/'))).toBe(true)
     expect(isLocalRequest(request('http://127.0.0.1:8888', '/'))).toBe(true)
     expect(isLocalRequest(request('http://[::1]:8888', '/'))).toBe(true)
     expect(isLocalRequest(request(PRODUCTION_ORIGIN, '/'))).toBe(false)
     expect(getAuthOrigin(request(PRODUCTION_ORIGIN, '/'))).toBe(PRODUCTION_ORIGIN)
+  })
+
+  it('keeps auth and its Google callback on the Netlify staging deployment', () => {
+    vi.stubEnv('URL', `${STAGING_ORIGIN}/`)
+    const authPath = '/api/auth/google?returnTo=%2Fmembers%2Fdashboard'
+
+    expect(getAuthOrigin(request(STAGING_ORIGIN, '/'))).toBe(STAGING_ORIGIN)
+    expect(getGoogleConfiguration(request(STAGING_ORIGIN, '/')).redirectUri).toBe(
+      `${STAGING_ORIGIN}/api/auth/google/callback`,
+    )
+    expect(getCanonicalAuthRedirect(request(STAGING_ORIGIN, authPath))).toBeNull()
+    expect(getCanonicalAuthRedirect(request(PRODUCTION_ORIGIN, authPath))).toBe(
+      `${STAGING_ORIGIN}${authPath}`,
+    )
+  })
+
+  it.each([
+    ['missing', ''],
+    ['malformed', 'not-a-url'],
+    ['insecure', 'http://ecstaging.netlify.app'],
+    ['non-origin', 'https://ecstaging.netlify.app/unexpected'],
+  ])('rejects a %s deployment URL', (_case, configuredUrl) => {
+    vi.stubEnv('URL', configuredUrl)
+
+    expect(() => getAuthOrigin(request(STAGING_ORIGIN, '/'))).toThrow(
+      ConfigurationError,
+    )
   })
 
   it('permits the development secret only on loopback and derives its fallback source', () => {
@@ -312,7 +342,7 @@ describe('member directory and access rejection edges', () => {
 })
 
 describe('function routing edges', () => {
-  it('redirects every authentication boundary from a noncanonical production host', async () => {
+  it('redirects every authentication boundary from a noncanonical deployment host', async () => {
     const alternateOrigin = 'https://entheo.community'
     const cases = [
       [createAuthGoogleHandler(), request(alternateOrigin, '/api/auth/google')],
